@@ -3,21 +3,18 @@
     "name": "profile",
     "path": "/profile",
     "component": "/Users/jake.km/Desktop/vue-nuxt-sns/client/pages/profile.vue",
-    "chunkName": "pages/profile",
-    "_name": "_63ea03a9"
+    "chunkName": "pages/profile"
   },
   {
     "name": "signup",
     "path": "/signup",
     "component": "/Users/jake.km/Desktop/vue-nuxt-sns/client/pages/signup.vue",
-    "chunkName": "pages/signup",
-    "_name": "_47c41270"
+    "chunkName": "pages/signup"
   },
   {
     "name": "index",
     "path": "/",
     "component": "/Users/jake.km/Desktop/vue-nuxt-sns/client/pages/index.vue",
-    "chunkName": "pages/index",
-    "_name": "_60be7f5c"
+    "chunkName": "pages/index"
   }
 ]

@@ -1,6 +1,6 @@
 <template>
     <div>
-        signup page
+        signup page edited
     </div>
 </template>
 
@@ -9,6 +9,11 @@ export default {
     data() {
         return {
             name: 'Nuxt.js'
+        }
+    },
+    head() {
+        return {
+            title: '회원가입'
         }
     }
 };

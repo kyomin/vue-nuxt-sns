@@ -1,0 +1,26 @@
+<template>
+    <div>
+        <nav>
+            <nuxt-link to="/">Home</nuxt-link>
+            <nuxt-link to="/profile">Profile</nuxt-link>
+            <nuxt-link to="/signup">Signup</nuxt-link>
+        </nav>
+        <!-- 넉스트 라우터 경로에 따라 바뀔 레이아웃이 여기에 삽입된다. -->
+        <nuxt />
+    </div>
+</template>
+
+<script>
+export default {
+    // 따로 설정하지 않은 페이지는 여기의 head를 따른다.
+    head() {
+        return {
+            title: 'Kyo SNS'
+        }
+    }
+};
+</script>
+
+<style>
+
+</style>
