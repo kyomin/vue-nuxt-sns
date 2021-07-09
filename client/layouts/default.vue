@@ -12,12 +12,7 @@
 
 <script>
 export default {
-    // 따로 설정하지 않은 페이지는 여기의 head를 따른다.
-    head() {
-        return {
-            title: 'Kyo SNS'
-        }
-    }
+    
 };
 </script>
 
