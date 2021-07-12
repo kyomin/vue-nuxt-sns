@@ -3,7 +3,7 @@
         <nav>
             <v-toolbar dark color="green">
                 <v-toolbar-title>
-                    <nuxt-link to="/">KyoBird</nuxt-link>
+                    <nuxt-link to="/">KyoSNS</nuxt-link>
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
@@ -17,7 +17,7 @@
                 </v-toolbar-items>
             </v-toolbar>
         </nav>
-        <v-row>
+        <v-row no-gutters>
             <!-- 
                 보통 html의 그리드 시스템에서는 가로 12등분을 한다.
 
@@ -26,7 +26,7 @@
                 xs(스마트폰 디스플레이) : 디폴트로 이 정도 사이즈로 줄어들면 한 줄을 다 차지하게 된다.
             -->
             <v-col cols="12" md="4">
-                로그인창
+                <LoginForm />
             </v-col>
             <v-col cols="12" md="8">
                 <nuxt />
@@ -36,8 +36,14 @@
 </template>
 
 <script>
+// 레이아웃에서도 외부 컴포넌트를 불러와 등록할 수 있다.
+// ~는 nuxt 프로젝트 경로의 root 경로이다.
+import LoginForm from '~/components/LoginForm.vue'
+
 export default {
-    
+    components: {
+        LoginForm
+    }
 };
 </script>
 
