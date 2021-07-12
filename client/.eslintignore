@@ -1,5 +1,10 @@
+# eslint가 검사 안해도 되는 파일들 명시
+
 /build/
 /config/
 /dist/
 /*.js
 /test/unit/coverage/
+
+package-lock.json
+package.json

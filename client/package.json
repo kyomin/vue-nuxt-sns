@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nuxt"
+    "dev": "nuxt",
+    "lint": "eslint --ext .js,.vue ."
   },
   "author": "kyomin",
   "license": "ISC",
@@ -17,14 +18,7 @@
     "vuetify": "^2.5.6"
   },
   "devDependencies": {
-    "eslint": "^7.30.0",
-    "eslint-config-standard": "^16.0.3",
-    "eslint-friendly-formatter": "^4.0.1",
-    "eslint-loader": "^4.0.2",
-    "eslint-plugin-import": "^2.23.4",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.1.0",
-    "eslint-plugin-standard": "^5.0.0",
-    "eslint-plugin-vue": "^7.13.0"
+    "eslint": "^6.3.0",
+    "eslint-plugin-vue": "^5.2.3"
   }
 }

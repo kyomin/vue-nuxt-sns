@@ -81,6 +81,8 @@ export default {
                 내부에 있는 입력 폼들의 rules가 모두 만족 되면,
                 this.valid를 true로,
                 아니면 false로 자동 셋팅해준다.
+
+                vuetify를 사용하지 않으면 직접 구현해야 한다.
             */
             if (this.$refs.form.validate()) {
                 alert('회원가입 form submit 시도!!')
