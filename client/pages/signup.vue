@@ -1,6 +1,6 @@
 <template>
     <div>
-        signup page edited
+        회원가입
     </div>
 </template>
 
