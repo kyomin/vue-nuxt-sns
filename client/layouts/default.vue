@@ -17,6 +17,11 @@
                 </v-toolbar-items>
             </v-toolbar>
         </nav>
+
+        <!-- vuex store 테스트 -->
+        <div>{{name}}</div>
+        <v-btn @click="onChangeName">바이바이</v-btn>
+
         <v-row no-gutters>
             <!-- 
                 보통 html의 그리드 시스템에서는 가로 12등분을 한다.
@@ -43,6 +48,16 @@ import LoginForm from '~/components/LoginForm.vue'
 export default {
     components: {
         LoginForm
+    },
+    computed: {
+        name() {
+            return this.$store.state.posts.name
+        }
+    },
+    methods: {
+        onChangeName() {
+            this.$store.commit('posts/bye')
+        }
     }
 };
 </script>
