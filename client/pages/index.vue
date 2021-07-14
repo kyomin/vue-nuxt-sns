@@ -2,11 +2,7 @@
     <v-container>
         <PostForm v-if="me" />
         <div>
-            <PostCard />
-            <PostCard />
-            <PostCard />
-            <PostCard />
-            <PostCard />
+            <PostCard v-for="p in mainPosts" :key="p.id" :post="p" />
         </div>
     </v-container>
 </template>
@@ -28,6 +24,9 @@ export default {
     computed: {
         me() {
             return this.$store.state.users.me
+        },
+        mainPosts() {
+            return this.$store.state.posts.mainPosts
         }
     }
 };

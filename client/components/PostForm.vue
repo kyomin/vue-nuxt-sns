@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <v-card style="margin-bottom: 20px">
         <v-container>
             <v-form ref="form" v-model="valid" @submit.prevent="onSubmitForm">
                 <v-textarea 
@@ -14,9 +14,9 @@
                     :rules="[v => !!v || '내용을 입력하세요.']"
                     @input="onChangeTextarea"
                 />
+                <v-btn type="submit" color="green" absolute right>짹짹</v-btn>
+                <v-btn>이미지 업로드</v-btn>
             </v-form>
-            <v-btn type="submit" color="green" absolute right>짹짹</v-btn>
-            <v-btn>이미지 업로드</v-btn>
         </v-container>
     </v-card>
 </template>
@@ -42,11 +42,11 @@ export default {
             // 한 글자라도 치면
             if (this.content) {
                 this.hideDetails = true
-                this.success = false
-                this.successMessages = ''
             } else {
                 this.hideDetails = false
             }
+            this.success = false
+            this.successMessages = ''
         },
         onSubmitForm() {
             if (this.$refs.form.validate()) {
@@ -61,6 +61,7 @@ export default {
                     createdAt: Date.now()
                 })
                     .then(() => {
+                        this.content = ''
                         this.hideDetails = false
                         this.success = true
                         this.successMessages = '게시글 등록 성공!'
