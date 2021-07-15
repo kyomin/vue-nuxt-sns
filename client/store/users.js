@@ -1,11 +1,16 @@
 export const state = () => ({
-    me: null    // me를 통해 로그인 여부를 확인한다.
+    me: null,    // me를 통해 로그인 여부를 확인한다.
+    followerList: [],
+    followingList: []
 })
 
 // 뮤테이션에서는 비동기 작업 처리를 하지 못한다.
 export const mutations = {
     setme(state, payload) {
         state.me = payload
+    },
+    changeNickname(state, payload) {
+        state.me.nickname = payload.nickname
     }
 }
 
@@ -20,5 +25,8 @@ export const actions = {
     },
     logout({ commit }, payload) {
         commit('setme', null)
+    },
+    changeNickname({ commit }, payload) {
+        commit('changeNickname', payload)
     }
 }
