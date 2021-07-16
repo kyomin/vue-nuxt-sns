@@ -56,7 +56,7 @@ export const actions = {
     addComment({ commit }, payload) {
         commit('addComment', payload)
     },
-    loadPosts({ commit, state }, payload) {
+    loadPosts({ commit, state }) {
         if (state.hasMorePost) {
             commit('loadPosts')
         }

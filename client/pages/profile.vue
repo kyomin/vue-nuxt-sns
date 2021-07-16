@@ -11,7 +11,7 @@
                             :rules="nicknameRules"
                             required 
                         />
-                        <v-btn color="blue" type="submit">수정</v-btn>
+                        <v-btn dark color="blue" type="submit">수정</v-btn>
                     </v-form>
                 </v-container>
             </v-card>
@@ -19,12 +19,14 @@
                 <v-container>
                     <v-subheader>팔로잉</v-subheader>
                     <FollowList :users="followingList" :remove="removeFollowing" />
+                    <v-btn @click="loadMoreFollowings" v-if="hasMoreFollowings" dark color="blue" style="width: 100%">더보기</v-btn>
                 </v-container>
             </v-card>
             <v-card style="margin-bottom: 20px">
                 <v-container>
                     <v-subheader>팔로워</v-subheader>
                     <FollowList :users="followerList" :remove="removeFollower" />
+                    <v-btn @click="loadMoreFollowers" v-if="hasMoreFollowers" dark color="blue" style="width: 100%">더보기</v-btn>
                 </v-container>
             </v-card>
         </v-container>
@@ -51,7 +53,17 @@ export default {
         },
         followerList() {
             return this.$store.state.users.followerList
+        },
+        hasMoreFollowings() {
+            return this.$store.state.users.hasMoreFollowings
+        },
+        hasMoreFollowers() {
+            return this.$store.state.users.hasMoreFollowers
         }
+    },
+    fetch({ store }) {
+        store.dispatch('users/loadFollowings')
+        store.dispatch('users/loadFollowers')
     },
     methods: {
         onChangeNickname() {
@@ -76,6 +88,12 @@ export default {
         },
         removeFollower(id) {
             this.$store.dispatch('users/removeFollower', { id })
+        },
+        loadMoreFollowings() {
+            this.$store.dispatch('users/loadFollowings')
+        },
+        loadMoreFollowers() { 
+            this.$store.dispatch('users/loadFollowers')
         }
     },
     head() {
