@@ -99,7 +99,8 @@ export default {
         return {
             title: '회원가입'
         }
-    }
+    },
+    middleware: 'anonymous'
 };
 </script>
 

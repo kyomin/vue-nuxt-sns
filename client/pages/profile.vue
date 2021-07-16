@@ -82,7 +82,9 @@ export default {
         return {
             title: '프로필'
         }
-    }
+    },
+    // 미들웨어는 컴포넌트가 렌더링 되기 전에 거치며 실행되는 곳이다.
+    middleware: 'authenticated'
 };
 </script>
 
