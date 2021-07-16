@@ -1,6 +1,10 @@
 export const state = () => ({
-    mainPosts: []
+    mainPosts: [],
+    hasMorePost: true,  // 스크롤하여 더 가져올 데이터가 있는가?
+
 })
+
+const limit = 10    // 게시글은 10개씩 끊어 가져옴
 
 export const mutations = {
     addMainPost(state, payload) {
@@ -11,9 +15,23 @@ export const mutations = {
         state.mainPosts.splice(index, 1)
     },
     addComment(state, payload) {
-        console.log('addComment mutation payload : ', payload)
         const index = state.mainPosts.findIndex(v => v.id === payload.postId)
         state.mainPosts[index].comments.unshift(payload)
+    },
+    loadPosts(state) {
+        const fakePosts = Array(limit).fill().map(v => ({
+            id: Math.random().toString(),
+            user: {
+                id: 1,
+                nickname: 'kyomin'
+            },
+            content: `Hello infinite scrolling! ${Math.random().toString()}`,
+            comments: [],
+            images: []
+        }))
+
+        state.mainPosts = state.mainPosts.concat(fakePosts)
+        state.hasMorePost = fakePosts.length === limit      // 가져온 게시물이 limit 미만이라면 다음은 없다.
     }
 }
 
@@ -34,5 +52,10 @@ export const actions = {
     },
     addComment({ commit }, payload) {
         commit('addComment', payload)
+    },
+    loadPosts({ commit, state }, payload) {
+        if (state.hasMorePost) {
+            commit('loadPosts')
+        }
     }
 }
