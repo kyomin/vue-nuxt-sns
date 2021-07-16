@@ -4,7 +4,8 @@ export const state = () => ({
 
 })
 
-const limit = 10    // 게시글은 10개씩 끊어 가져옴
+const totalPosts = 31;
+const limit = 10    // 게시글은 10개씩 끊어 가져온다 가정
 
 export const mutations = {
     addMainPost(state, payload) {
@@ -19,7 +20,9 @@ export const mutations = {
         state.mainPosts[index].comments.unshift(payload)
     },
     loadPosts(state) {
-        const fakePosts = Array(limit).fill().map(v => ({
+        const diff = totalPosts - state.mainPosts.length    // 아직 안 불러온 게시글 수
+
+        const fakePosts = Array(diff > limit ? limit : diff).fill().map(v => ({
             id: Math.random().toString(),
             user: {
                 id: 1,
