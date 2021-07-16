@@ -5,7 +5,7 @@
             <v-card-text>
                 <div>
                     <h3>{{ post.user.nickname }}</h3>
-                    <div>{{ post.content }}</div>
+                    <nuxt-link :to="'/post/' + post.id">{{ post.content }}</nuxt-link>
                 </div>
             </v-card-text>
             <v-card-actions>
@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import CommentForm from '~/components/CommentForm.vue'
+import CommentForm from '~/components/CommentForm'
 
 export default {
     components: {

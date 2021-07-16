@@ -30,6 +30,7 @@
                 <LoginForm />
             </v-col>
             <v-col cols="12" md="8">
+                <!-- 넉스트 라우터 경로에 따라 바뀔 컴포넌트가 여기에 삽입된다. -->
                 <nuxt />
             </v-col>
         </v-row>
@@ -39,7 +40,7 @@
 <script>
 // 레이아웃에서도 외부 컴포넌트를 불러와 등록할 수 있다.
 // ~는 nuxt 프로젝트 경로의 root 경로이다.
-import LoginForm from '~/components/LoginForm.vue'
+import LoginForm from '~/components/LoginForm'
 
 export default {
     components: {

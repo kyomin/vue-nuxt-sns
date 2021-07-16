@@ -14,6 +14,13 @@
     "_name": "_47c41270"
   },
   {
+    "name": "post-id",
+    "path": "/post/:id",
+    "component": "/Users/jake.km/Desktop/vue-nuxt-sns/client/pages/post/_id/index.vue",
+    "chunkName": "pages/post/_id/index",
+    "_name": "_f688f784"
+  },
+  {
     "name": "index",
     "path": "/",
     "component": "/Users/jake.km/Desktop/vue-nuxt-sns/client/pages/index.vue",
