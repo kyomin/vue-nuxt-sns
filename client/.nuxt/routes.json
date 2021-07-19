@@ -14,11 +14,25 @@
     "_name": "_47c41270"
   },
   {
+    "name": "hashtag-id",
+    "path": "/hashtag/:id",
+    "component": "/Users/jake.km/Desktop/vue-nuxt-sns/client/pages/hashtag/_id/index.vue",
+    "chunkName": "pages/hashtag/_id/index",
+    "_name": "_c0abb58c"
+  },
+  {
     "name": "post-id",
     "path": "/post/:id",
     "component": "/Users/jake.km/Desktop/vue-nuxt-sns/client/pages/post/_id/index.vue",
     "chunkName": "pages/post/_id/index",
     "_name": "_f688f784"
+  },
+  {
+    "name": "user-id",
+    "path": "/user/:id",
+    "component": "/Users/jake.km/Desktop/vue-nuxt-sns/client/pages/user/_id/index.vue",
+    "chunkName": "pages/user/_id/index",
+    "_name": "_d6e91fae"
   },
   {
     "name": "index",
