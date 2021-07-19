@@ -88,7 +88,8 @@ export default {
                 console.log('회원가입 form submit 시도!!')
                 this.$store.dispatch('users/signup',  {
                     email: this.email,
-                    nickname: this.nickname
+                    nickname: this.nickname,
+                    password: this.password
                 })
             } else {
                 alert('폼이 유효하지 않습니다.')

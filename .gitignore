@@ -24,3 +24,6 @@ selenium-debug.log
 *.njsproj
 *.sln
 *.sqlite
+
+# config files
+config/

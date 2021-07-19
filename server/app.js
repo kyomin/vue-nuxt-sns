@@ -1,9 +1,34 @@
 const express = require('express')
+const db = require('./models')
 
 const app = express()
 
+/* database connection */
+db.sequelize.sync()
+
+/* express 미들웨어 등록 */
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+
 app.get('/', (req, res) => {
-    res.send('안녕 백엔드')
+    res.send('안녕 Node.js')
+})
+
+app.post('/user', async (req, res, next) => {
+    console.log(req.body)
+
+    try {
+        const newUser = await db.User.create({
+            email: req.body.email,
+            password: req.body.password,
+            nickname: req.body.nickname
+        })
+
+        res.status(201).json(newUser)
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
 })
 
 app.listen(3085, () => {

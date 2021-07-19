@@ -63,7 +63,12 @@ export const mutations = {
 // 비동기 작업은 액션에 위임한다.
 export const actions = {
     signup({ commit, state }, payload) {
-        // 서버에 회원가입 요청(post)을 보내는 부분
+        // nuxt 설정에 axios를 등록했기 때문에, 다음과 같이 접근이 가능하다.
+        this.$axios.post('http://localhost:3085/user', {
+            email: payload.email,
+            nickname: payload.nickname,
+            password: payload.password
+        })
         commit('setme', payload)
     },
     login({ commit }, payload) {
