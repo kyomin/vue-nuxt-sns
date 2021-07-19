@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 const db = require('./models')
 
 const app = express()
@@ -9,14 +10,13 @@ db.sequelize.sync()
 /* express 미들웨어 등록 */
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(cors('http://localhost:3000'))
 
 app.get('/', (req, res) => {
     res.send('안녕 Node.js')
 })
 
 app.post('/user', async (req, res, next) => {
-    console.log(req.body)
-
     try {
         const newUser = await db.User.create({
             email: req.body.email,
