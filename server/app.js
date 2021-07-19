@@ -1,10 +1,12 @@
 const express = require('express')
 const cors = require('cors')
-const db = require('./models')
+const bcrypt = require('bcrypt')
 
+/* make express app */
 const app = express()
 
 /* database connection */
+const db = require('./models')
 db.sequelize.sync()
 
 /* express 미들웨어 등록 */
@@ -18,9 +20,10 @@ app.get('/', (req, res) => {
 
 app.post('/user', async (req, res, next) => {
     try {
+        const hash = await bcrypt.hash(req.body.password, 12)   // 비밀번호 암호화
         const newUser = await db.User.create({
             email: req.body.email,
-            password: req.body.password,
+            password: hash,
             nickname: req.body.nickname
         })
 
