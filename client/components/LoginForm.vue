@@ -59,7 +59,7 @@ export default {
             if(this.$refs.form.validate()) {
                 this.$store.dispatch('users/login', {
                     email: this.email,
-                    nickname: 'Jake'
+                    password: this.password
                 })
                     .then(() => {
                         this.$router.push({

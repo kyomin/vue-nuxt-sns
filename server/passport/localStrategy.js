@@ -10,6 +10,7 @@ module.exports = () => {
     }, async (email, password, done) => {
         try {
             const exUser = await db.User.findOne({ where: { email } })
+            console.log('exUser : ', exUser)
             if (!exUser) {  // DB에 없는 회원일 경우
                 // first: 에러, second: 성공, third: 실패
                 return done(null, false, { reason: '존재하지 않는 사용자입니다.' })
@@ -18,6 +19,7 @@ module.exports = () => {
             // 사용자가 DB에 등록돼 있으면 비밀번호 검증
             // first: plain password, second: bcrypted password
             const result = await bcrypt.compare(password, exUser.password)
+            console.log('compare password result : ', result)
             if (result) {
                 return done(null, exUser)
             } else {

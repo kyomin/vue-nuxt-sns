@@ -11,7 +11,7 @@ const app = express()
 
 /* database connection */
 const db = require('./models')
-db.sequelize.sync({ force: true })  // 모델(table) 구조 수정 시 강제 적용. 테이블 지웠다가 다시 만듦.
+db.sequelize.sync()
 
 /* for login auth */
 const passportConfig = require('./passport')
@@ -21,12 +21,19 @@ passportConfig()
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use(cors('http://localhost:3000'))
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true   // 서로 간에 쿠키를 주고받을 수 있도록 설정
+}))
 app.use(cookie('cookiesecret'))
 app.use(session({
     resave: false,
     saveUninitialized: false,
-    secret: 'cookiesecret'
+    secret: 'cookiesecret',
+    cookie: {
+        httpOnly: true,
+        secure: false
+    }
 }))
 app.use(passport.initialize())  // request 객체에 login과 logout을 넣어줌
 app.use(passport.session())
@@ -56,6 +63,31 @@ app.post('/user', async (req, res, next) => {
             password: hash,
             nickname: req.body.nickname
         })
+
+        passport.authenticate('local', (err, user, info) => {
+            if (err) {
+                console.error(err)
+                return next(err)
+            }
+            if (info) {
+                return res.status(401).json({
+                    errorCode: 2,
+                    message: info.reason
+                })
+            }
+    
+            // 세션에 사용자 정보를 저장 (serializeUser를 이용해서!)
+            return req.login(user, async (err) => {
+                if (err) {
+                    console.error(err)
+                    return next(err)
+                }
+    
+                // response data로 로그인 한 유저 정보를 클라이언트에 보낸다.
+                // 자동으로 passport는 쿠키 값 또한 보낸다.
+                return res.json(user)
+            })
+        })(req, res, next)
 
         return res.status(201).json(newUser)
     } catch (err) {
