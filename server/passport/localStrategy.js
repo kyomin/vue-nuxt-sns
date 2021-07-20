@@ -10,7 +10,6 @@ module.exports = () => {
     }, async (email, password, done) => {
         try {
             const exUser = await db.User.findOne({ where: { email } })
-            console.log('exUser : ', exUser)
             if (!exUser) {  // DB에 없는 회원일 경우
                 // first: 에러, second: 성공, third: 실패
                 return done(null, false, { reason: '존재하지 않는 사용자입니다.' })

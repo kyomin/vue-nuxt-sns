@@ -90,8 +90,15 @@ export const actions = {
                 console.error(err)
             })
     },
-    logout({ commit }, payload) {
-        commit('setme', null)
+    logout({ commit }) {
+        this.$axios.post('http://localhost:3085/user/logout', {}, { withCredentials: true })
+            .then((res) => {
+                console.log('logout response data : ', res.data)
+                commit('setme', null)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
     },
     changeNickname({ commit }, payload) {
         commit('changeNickname', payload)
