@@ -15,7 +15,20 @@
                     @input="onChangeTextarea"
                 />
                 <v-btn type="submit" color="green" absolute right>짹짹</v-btn>
-                <v-btn>이미지 업로드</v-btn>
+                
+                <!-- 
+                    type이 file인 input 태그는 숨겨준 후, 버튼 클릭을 통해 발생하는 이벤트 함수에서 접근해 클릭을 시킨다.
+                    기본적으로 form 안에 있는 button은 submit 타입이므로, 다른 동작을 하는 버튼은 button 타입이라 명시하는 것이 좋다.
+                -->
+                <!-- <input ref="imageInput" type="file" multiple hidden @change="onChangeImages"> -->
+                <input 
+                    ref="imageInput" 
+                    type="file" 
+                    multiple 
+                    hidden 
+                    @change="onChangeImages"
+                />
+                <v-btn type="button" @click="onClickImageUpload">이미지 업로드</v-btn>
             </v-form>
         </v-container>
     </v-card>
@@ -79,6 +92,20 @@ export default {
 
                     })
             }
+        },
+        onClickImageUpload() {
+            this.$refs.imageInput.click()   // 돔에 접근해 클릭 발생!
+        },
+        onChangeImages(e) {
+            console.log('업로드 할 파일들 : ', e.target.files)
+            const files = e.target.files
+            const imageFormData = new FormData()
+
+            for (let i = 0; i < files.length; i++) {
+                imageFormData.append('image', files[i])
+            }
+
+            this.$store.dispatch('posts/uploadImages', imageFormData)
         }
     }
 }

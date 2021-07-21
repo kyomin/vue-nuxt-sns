@@ -87,11 +87,9 @@ router.post('/login', isNotLoggedIn, async (req, res, next) => {
 })
 
 router.post('/logout', isLoggedIn, (req, res) => {
-    if (req.isAuthenticated()) {
-        req.logout()    // passport가 알아서 클라이언트 측의 쿠키 정보를 뽑아내 메모리 상의 key를 찾아 지워준다.
-        req.session.destroy()
-        return res.status(200).send('로그아웃 되었습니다.')
-    }
+    req.logout()    // passport가 알아서 클라이언트 측의 쿠키 정보를 뽑아내 메모리 상의 key를 찾아 지워준다.
+    req.session.destroy()
+    return res.status(200).send('로그아웃 되었습니다.')
 })
 
 module.exports = router
