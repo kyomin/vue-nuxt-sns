@@ -1,10 +1,12 @@
 const express = require('express')
-const router = express.Router()
 const bcrypt = require('bcrypt')
 const passport = require('passport')
 const db = require('../models')
+const { isLoggedIn, isNotLoggedIn } = require('./middlewares')
 
-router.post('/', async (req, res, next) => {    // 회원가입
+const router = express.Router()
+
+router.post('/', isNotLoggedIn, async (req, res, next) => {    // 회원가입
     try {
         // 가입 이메일 중복 검사
         const exUser = await db.User.findOne({
@@ -58,7 +60,7 @@ router.post('/', async (req, res, next) => {    // 회원가입
     }
 })
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', isNotLoggedIn, async (req, res, next) => {
     // ./passport/localStratege.js에서 export한 함수 실행 후 return한 값 콜백으로 받는다.
     // 특히 passport가 알아서 req 객체를 참조한다.
     passport.authenticate('local', (err, user, info) => {
@@ -84,7 +86,7 @@ router.post('/login', async (req, res, next) => {
     })(req, res, next)
 })
 
-router.post('/logout', (req, res) => {
+router.post('/logout', isLoggedIn, (req, res) => {
     if (req.isAuthenticated()) {
         req.logout()    // passport가 알아서 클라이언트 측의 쿠키 정보를 뽑아내 메모리 상의 key를 찾아 지워준다.
         req.session.destroy()

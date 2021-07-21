@@ -8,6 +8,7 @@ const morgan = require('morgan')
 const db = require('./models')
 const passportConfig = require('./passport')
 const userRouter = require('./routes/user')
+const postRouter = require('./routes/post')
 
 const port = 3085       // allocate port number
 const app = express()   // make express app
@@ -37,6 +38,7 @@ app.use(passport.session())
 
 /* express 라우터 미들웨어 등록 */
 app.use('/user', userRouter)
+app.use('/post', postRouter)
 
 app.get('/', (req, res) => {
     res.send('Welcome to KyoSNS Server')
