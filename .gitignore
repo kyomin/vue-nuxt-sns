@@ -27,3 +27,6 @@ selenium-debug.log
 
 # config files
 config/
+
+# image files
+uploads/

@@ -1,7 +1,7 @@
 export const state = () => ({
     mainPosts: [],
     hasMorePost: true,  // 스크롤하여 더 가져올 데이터가 있는가?
-
+    imagePaths: []
 })
 
 const totalPosts = 31;
@@ -35,6 +35,12 @@ export const mutations = {
 
         state.mainPosts = state.mainPosts.concat(fakePosts)
         state.hasMorePost = fakePosts.length === limit      // 가져온 게시물이 limit 미만이라면 다음은 없다.
+    },
+    concatImagePaths(state, payload) {
+        state.imagePaths = state.imagePaths.concat(payload)
+    },
+    removeImagePath(state, payload) {
+        state.imagePaths.splice(payload, 1)
     }
 }
 
@@ -66,7 +72,7 @@ export const actions = {
             withCredentials: true 
         })
             .then((res) => {
-
+                commit('concatImagePaths', res.data)
             })
             .catch((err) => {
                 console.error(err)

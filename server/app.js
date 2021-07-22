@@ -23,6 +23,7 @@ app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true   // 서로 간에 쿠키를 주고받을 수 있도록 설정
 }))
+app.use('/', express.static('uploads'))     // 정적 파일 경로 미들웨어로 등록. 이제 클라이언트에서는 '/파일명'으로 사진 파일에 접근 가능하다.
 app.use(cookie('cookiesecret'))
 app.use(session({
     resave: false,

@@ -29,6 +29,14 @@
                     @change="onChangeImages"
                 />
                 <v-btn type="button" @click="onClickImageUpload">이미지 업로드</v-btn>
+                <div>
+                    <div v-for="(p, i) in imagePaths" :key="p" style="display: inline-block">
+                        <img :src="`http://localhost:3085/${p}`" :alt="p" style="width: 200px" />
+                        <div>
+                            <button type="button" @click="onRemoveImage(i)">제거</button>
+                        </div>
+                    </div>
+                </div>
             </v-form>
         </v-container>
     </v-card>
@@ -49,7 +57,8 @@ export default {
         }
     },
     computed: {
-        ...mapState('users', ['me'])
+        ...mapState('users', ['me']),
+        ...mapState('posts', ['imagePaths'])
     },
     methods: {
         onChangeTextarea() {
@@ -106,6 +115,9 @@ export default {
             }
 
             this.$store.dispatch('posts/uploadImages', imageFormData)
+        },
+        onRemoveImage(index) {
+            this.$store.commit('posts/removeImagePath', index)
         }
     }
 }
