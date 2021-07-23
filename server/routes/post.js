@@ -72,4 +72,61 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     }
 })
 
+router.post('/:id/comment', isLoggedIn, async (req, res, next) => {     // :id => 동적으로 변할 수 있는 부분. params.id로 접근
+    try {
+        // 예외 처리!
+        const post = await db.Post.findOne({ where: { id: req.params.id } })
+        if (!post) {
+            return res.status(404).send('해당 게시글이 존재하지 않습니다.')
+        }
+
+        const newComment = await db.Comment.create({
+            PostId: post.id,
+            UserId: req.user.id,
+            content: req.body.content
+        })
+
+        const resComment = await db.Comment.findOne({
+            where: {
+                id: newComment.id
+            },
+            include: [{
+                model: db.User,
+                attributes: ['id', 'nickname']
+            }]
+        })
+
+        return res.json(resComment)
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
+})
+
+router.get('/:id/comments', async (req, res, next) => {
+    try {
+        // 예외 처리!
+        const post = await db.Post.findOne({ where: { id: req.params.id } })
+        if (!post) {
+            return res.status(404).send('해당 게시글이 존재하지 않습니다.')
+        }
+
+        const comments = await db.Comment.findAll({
+            where: {
+                PostId: req.params.id
+            },
+            include: [{
+                model: db.User,
+                attributes: ['id', 'nickname']
+            }],
+            order: [['createdAt', 'ASC']]
+        })
+
+        res.json(comments)
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
+})
+
 module.exports = router
