@@ -1,6 +1,7 @@
 const express = require('express')
 const multer = require('multer')
 const path = require('path')
+const db = require('../models')
 const { isLoggedIn } = require('./middlewares')
 
 const router = express.Router()
@@ -36,8 +37,39 @@ router.post('/images', isLoggedIn, upload.array('image'), (req, res) => {
     res.json(req.files.map(v => v.filename))
 })
 
-router.post('/', isLoggedIn, (req, res) => {
+router.post('/', isLoggedIn, async (req, res, next) => {
+    try {
+        const hashtags = req.body.content.match(/#[^\s#]+/g)
+        const newPost = await db.Post.create({
+            content: req.body.content,
+            UserId: req.user.id
+        })
+        
+        if (hashtags) {
+            // Promise.all로 배열 각각에 대한 비동기를 병렬로 처리
+            // 이로 인해 가장 긴 비동기 시간이 걸리는 최종 시간이다.
+            // 직렬로 처리할 시 수행 시간은 모든 비동기를 기다리므로 다 더한 값이 되니까 시간 단축이 된다.
+            const result = await Promise.all(hashtags.map(tag => db.Hashtag.findOrCreate({   // 찾으면 저장 X. 있는 경우에만 저장하기
+                where: { name: tag.slice(1).toLowerCase() }
+            })))
 
+            // 다대다 관계를 형성하면서 시퀄라이즈가 동시에 addHashtags 함수를 정의해 준 것이다.
+            await newPost.addHashtags(result.map(r => r[0]))
+        }
+
+        const fullPost = await db.Post.findOne({
+            where: { id: newPost.id },
+            include: [{
+                model: db.User,     // 참조 관계에 있는 User 테이블에서
+                attributes: ['id', 'nickname']      // 해당 속성만 가져와서 포함 시킨다.
+            }]
+        })
+
+        return res.json(fullPost)
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
 })
 
 module.exports = router

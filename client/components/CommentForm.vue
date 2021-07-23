@@ -64,7 +64,7 @@ export default {
                     id: Date.now(),
                     postId: this.postId,
                     comment: this.comment,
-                    user: {
+                    User: {
                         nickname: this.me.nickname
                     }
                 })

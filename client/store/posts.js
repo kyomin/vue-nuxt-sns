@@ -10,6 +10,7 @@ const limit = 10    // 게시글은 10개씩 끊어 가져온다 가정
 export const mutations = {
     addMainPost(state, payload) {
         state.mainPosts.unshift(payload)    // 최신 게시글을 맨 앞에 보여주기 위해 unshift를 쓴다.
+        state.imagePaths = []
     },
     removeMainPost(state, payload) {
         const index = state.mainPosts.findIndex(v => v.id === payload.id)
@@ -24,7 +25,7 @@ export const mutations = {
 
         const fakePosts = Array(diff > limit ? limit : diff).fill().map(v => ({
             id: Math.random().toString(),
-            user: {
+            User: {
                 id: 1,
                 nickname: 'kyomin'
             },
@@ -45,16 +46,21 @@ export const mutations = {
 }
 
 export const actions = {
-    add({ commit }, payload) {
-        /* 
-            기본적으로 같은 모듈 내에 있는 mutation이나 action을 호출할 때,
-            posts/addMainPost와 같이 명시할 필요가 없다.
-
-            하지만 만일 addMainPost를 스토어의 root인 index.js도 가지고 있고,
-            여기서 이것을 호출하고 싶다면 3번째 인자로 { root: true } 속성을 부여한다. 
-        */
-        // commit('addMainPost', payload, { root: true })
-        commit('addMainPost', payload)
+    add({ commit, state }, payload) {
+        // 서버에 게시글 등록 요청 보냄
+        this.$axios.post('http://localhost:3085/post', {
+            content: payload.content,
+            imagePaths: state.imagePaths
+        }, {
+            withCredentials: true
+        })
+            .then((res) => {
+                console.log('res.data : ', res.data)
+                commit('addMainPost', res.data)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
     },
     remove({ commit }, payload) {
         commit('removeMainPost', payload)
@@ -69,7 +75,7 @@ export const actions = {
     },
     uploadImages({ commit }, payload) {
         this.$axios.post('http://localhost:3085/post/images', payload, { 
-            withCredentials: true 
+            withCredentials: true
         })
             .then((res) => {
                 commit('concatImagePaths', res.data)
