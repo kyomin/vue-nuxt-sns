@@ -1,7 +1,7 @@
 <template>
     <v-form ref="form" v-model="valid" style="position: relative" @submit.prevent="onSubmitForm">
         <v-textarea 
-            v-model="comment"
+            v-model="content"
             filled
             auto-grow
             clearable
@@ -9,7 +9,7 @@
             :hide-details="hideDetails"
             :success-messages="successMessages"
             :success="success"
-            :rules="commentRules"
+            :rules="contentRules"
             @input="onChangeTextarea"
         />
         <v-btn type="submit" color="green" dark absolute top right>삐약</v-btn>
@@ -31,8 +31,8 @@ export default {
             hideDetails: true,
             successMessages: '',
             success: false,
-            comment: '',
-            commentRules: []
+            content: '',
+            contentRules: []
         }
     },
     computed: {
@@ -43,7 +43,7 @@ export default {
     methods: {
         onChangeTextarea() {
             // 한 글자라도 치면
-            if (this.comment) {
+            if (this.content) {
                 this.hideDetails = true
             } 
 
@@ -51,29 +51,25 @@ export default {
             this.successMessages = ''
         },
         onSubmitForm() {
-            if (!this.comment) {
-                this.commentRules = [v => !!v || '내용을 입력하세요.']
+            if (!this.content) {
+                this.contentRules = [v => !!v || '내용을 입력하세요.']
                 this.hideDetails = false
                 this.success = false
                 this.successMessages = ''
-                return 
+                return
             }
 
             if (this.$refs.form.validate()) {
-                this.$store.dispatch('posts/addComment', {
-                    id: Date.now(),
+                this.$store.dispatch('posts/addcontent', {
                     postId: this.postId,
-                    comment: this.comment,
-                    User: {
-                        nickname: this.me.nickname
-                    }
+                    content: this.content
                 })
                     .then(() => {
-                        this.comment = ''
+                        this.content = ''
                         this.hideDetails = false
                         this.success = true
                         this.successMessages = '댓글이 작성되었습니다.'
-                        this.commentRules = []
+                        this.contentRules = []
                     })
                     .catch((err) => {
 

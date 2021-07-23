@@ -92,6 +92,13 @@ export default {
 
         },
         onToggleComment() {
+            // 댓글 창 여는 동작을 할 때 서버로부터 로드해 오기!
+            if (!this.commentOpened) {
+                this.$store.dispatch('posts/loadComments', {
+                    postId: this.post.id
+                })
+            }
+
             this.commentOpened = !this.commentOpened
         }
     }

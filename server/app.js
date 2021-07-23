@@ -9,11 +9,13 @@ const db = require('./models')
 const passportConfig = require('./passport')
 const userRouter = require('./routes/user')
 const postRouter = require('./routes/post')
+const postsRouter = require('./routes/posts')
 
 const port = 3085       // allocate port number
 const app = express()   // make express app
 db.sequelize.sync()     // database connection
 passportConfig()        // for login auth
+
 
 /* express 미들웨어 등록 */
 app.use(morgan('dev'))
@@ -37,10 +39,16 @@ app.use(session({
 app.use(passport.initialize())  // 이 미들웨어에서 request 객체에 login과 logout을 넣어줌
 app.use(passport.session())
 
+
+
 /* express 라우터 미들웨어 등록 */
 app.use('/user', userRouter)
 app.use('/post', postRouter)
+app.use('/posts', postsRouter)
 
+
+
+/* Create Server */
 app.get('/', (req, res) => {
     res.send('Welcome to KyoSNS Server')
 })
