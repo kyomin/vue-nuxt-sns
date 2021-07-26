@@ -62,6 +62,17 @@ export const mutations = {
 
 // 비동기 작업은 액션에 위임한다.
 export const actions = {
+    loadUser({ commit }) {
+        this.$axios.get('http://localhost:3085/user', {
+            withCredentials: true
+        })
+            .then((res) => {
+                commit('setme', res.data)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+    },
     signup({ commit }, payload) {
         // nuxt 설정에 axios를 등록했기 때문에, 다음과 같이 접근이 가능하다.
         this.$axios.post('http://localhost:3085/user', {

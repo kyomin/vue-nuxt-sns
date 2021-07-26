@@ -58,11 +58,28 @@ router.post('/', isLoggedIn, async (req, res, next) => {
             await newPost.addHashtags(result.map(r => r[0]))
         }
 
+        // 이미지가 담겨 왔다면
+        if (req.body.image) {
+            /* 
+                하나만 담겨올 경우, 배열 타입이 아니라 문자열만 전달되는 버그가 있을 수 있다.
+                이것을 예외처리하여 DB에 담는 작업이다.
+            */
+            if (Array.isArray(req.body.image)) {
+                await Promise.all(req.body.image.map((image) => {
+                    return db.Image.create({ src: image, PostId: newPost.id })
+                }))
+            } else {
+                await db.Image.create({ src: req.body.image, PostId: newPost.id })
+            }
+        }
+
         const fullPost = await db.Post.findOne({
             where: { id: newPost.id },
             include: [{
                 model: db.User,     // 참조 관계에 있는 User 테이블에서
                 attributes: ['id', 'nickname']      // 해당 속성만 가져와서 포함 시킨다.
+            }, {
+                model: db.Image     // 참조 관계에 있는 Image 정보를 가져온다(일대다이므로 배열로 가져온다).
             }]
         })
 
@@ -124,6 +141,21 @@ router.get('/:id/comments', async (req, res, next) => {
         })
 
         res.json(comments)
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
+})
+
+router.delete('/:id', async (req, res,next) => {
+    try {
+        await db.Post.destroy({
+            where: {
+                id: req.params.id
+            }
+        })
+
+        res.send('해당 게시글을 삭제했습니다.')
     } catch (err) {
         console.error(err)
         next(err)

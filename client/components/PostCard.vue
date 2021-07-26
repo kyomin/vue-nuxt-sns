@@ -1,17 +1,24 @@
 <template>
     <div style="margin-bottom: 20px">
         <v-card>
-            <v-img />
+            <!-- 게시글 이미지들 -->
+            <PostImages :images="post.Images || []" />
+
+            <!-- 게시글 작성자 -->
             <v-card-title>
                 <h3>
                     <nuxt-link :to="'/user/' + post.id">{{ post.User.nickname }}</nuxt-link>
                 </h3>
             </v-card-title>
+
+            <!-- 게시글 내용 -->
             <v-card-text>
                 <div>
                     <div>{{ post.content }}</div>
                 </div>
             </v-card-text>
+
+            <!-- 게시글 옵션들 -->
             <v-card-actions>
                 <v-btn text color="orange">
                     <v-icon>mdi-twitter-retweet</v-icon>
@@ -59,10 +66,12 @@
 
 <script>
 import CommentForm from '~/components/CommentForm'
+import PostImages from '~/components/PostImages'
 
 export default {
     components: {
-        CommentForm
+        CommentForm,
+        PostImages
     },
     /* 
         기존에는 
@@ -85,7 +94,7 @@ export default {
     methods: {
         onRemovePost() {
             this.$store.dispatch('posts/remove', {
-                id: this.post.id
+                postId: this.post.id
             })
         },
         onEditPost() {
@@ -94,7 +103,7 @@ export default {
         onToggleComment() {
             // 댓글 창 여는 동작을 할 때 서버로부터 로드해 오기!
             if (!this.commentOpened) {
-                this.$store.dispatch('posts/loadComments', {
+                this.$store.dispatch('posts/addComment', {
                     postId: this.post.id
                 })
             }

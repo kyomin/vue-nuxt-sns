@@ -60,7 +60,7 @@ export default {
             }
 
             if (this.$refs.form.validate()) {
-                this.$store.dispatch('posts/addcontent', {
+                this.$store.dispatch('posts/addComment', {
                     postId: this.postId,
                     content: this.content
                 })

@@ -20,7 +20,7 @@ router.get('/', async (req, res, next) => {     // GET /posts?offset=10&limit=10
 
         console.log('posts : ', posts)
 
-        return res.json([])
+        return res.json(posts)
     } catch (err) {
         console.error(err)
         next(err)
