@@ -36,7 +36,7 @@ export default {
     // 페이지가 처음 마운트 되기 전에, 데이터를 로드하는 것이다.
     fetch({ store }) {
         // 액션을 호출해 서버에서 데이터를 가져와 state에 셋팅한다.
-        store.dispatch('posts/loadPosts')
+        return store.dispatch('posts/loadPosts', { reset: true })
     },
     mounted() {
         // 브라우저 객체 window는 mounted 됐을 때에 접근 가능하다.

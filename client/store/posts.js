@@ -93,6 +93,7 @@ export const actions = {
         if (state.hasMorePost) {
             this.$axios.get(`http://localhost:3085/posts?offset=${state.mainPosts.length}&limit=${limit}`)
                 .then((res) => {
+                    console.log('loadPosts response data : ', res.data)
                     commit('loadPosts', res.data)
                 })
                 .catch((err) => {
