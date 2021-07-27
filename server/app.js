@@ -13,6 +13,7 @@ const postsRouter = require('./routes/posts')
 
 const port = 3085       // allocate port number
 const app = express()   // make express app
+// db.sequelize.sync({ force: true })  // 모델(table) 구조 수정 시 강제 적용. 테이블 지웠다가 다시 만듦.
 db.sequelize.sync()     // database connection
 passportConfig()        // for login auth
 

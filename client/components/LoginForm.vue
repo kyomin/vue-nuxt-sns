@@ -67,7 +67,8 @@ export default {
                         })
                     })
                     .catch((err) => {
-                        alert('회원가입 실패')
+                        console.error(err)
+                        alert('로그인 실패')
                     })
             }
         },

@@ -162,4 +162,91 @@ router.delete('/:id', async (req, res,next) => {
     }
 })
 
+router.post('/:id/retweet', async (req, res, next) => {
+    try {
+        const post = await db.Post.findOne({
+            where: { id: req.params.id },
+            include: [{
+                model: db.Post,
+                as: 'Retweet'   // 리트윗한 게시글이면 원본 게시글이 됨
+            }]
+        })
+
+        if (!post) {
+            return res.status(404).send('게시글이 존재하지 않습니다.')
+        }
+
+        // 자신의 글을 리트윗하는 경우는 막는다 || 원본이 내 게시글인 경우도 막는다.
+        if (req.user.id === post.UserId || (post.Retweet && post.Retweet.UserId === req.user.id)) {
+            return res.status(403).send('자신의 글은 리트윗할 수 없습니다.')
+        }
+
+        const retweetTargetId = post.RetweetId || post.id
+        const exPost = await db.Post.findOne({
+            where: {
+                UserId: req.user.id,
+                RetweetId: retweetTargetId
+            }
+        })
+        if (exPost) {
+            return res.status(403).send('이미 리트윗했습니다.')
+        }
+        
+        const retweet = await db.Post.create({
+            UserId: req.user.id,
+            RetweetId: retweetTargetId,     // 원본 아이디
+            content: 'retweet'
+        })
+        
+        const retweetWithPrevPost = await db.Post.findOne({
+            where: { id: retweet.id },
+            include: [{
+                model: db.User,
+                attributes: ['id', 'nickname']
+            }, {
+                model: db.Post,
+                as: 'Retweet',       // 원본 table alias
+                include: [{
+                    model: db.User,
+                    attributes: ['id', 'nickname']
+                }, {
+                    model: db.Image
+                }]
+            }]
+        })
+        res.status(201).json(retweetWithPrevPost)
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
+})
+
+router.post('/:id/like', isLoggedIn, async (req, res, next) => {
+    try {
+        const post = await db.Post.findOne({ where: { id: req.params.id } })
+        if (!post) {
+            return res.status(404).send('게시글이 존재하지 않습니다.')
+        }
+        await post.addLiker(req.user.id)
+        res.status(201).json({ userId: req.user.id })
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
+})
+
+router.delete('/:id/like', isLoggedIn, async (req, res, next) => {
+    try {
+        const post = await db.Post.findOne({ where: { id: req.params.id } })
+        if (!post) {
+            return res.status(404).send('게시글이 존재하지 않습니다.')
+        }
+        await post.removeLiker(req.user.id)
+        res.status(200).json({ userId: req.user.id })
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
+})
+
 module.exports = router

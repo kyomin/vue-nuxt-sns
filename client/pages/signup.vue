@@ -85,12 +85,20 @@ export default {
                 vuetify를 사용하지 않으면 직접 구현해야 한다.
             */
             if (this.$refs.form.validate()) {
-                console.log('회원가입 form submit 시도!!')
                 this.$store.dispatch('users/signup',  {
                     email: this.email,
                     nickname: this.nickname,
                     password: this.password
                 })
+                    .then(() => {
+                        this.$router.push({
+                            path: '/'
+                        })
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                        alert('회원가입 실패')
+                    })
             } else {
                 alert('폼이 유효하지 않습니다.')
             }
