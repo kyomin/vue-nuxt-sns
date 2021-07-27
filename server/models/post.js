@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         db.Post.belongsTo(db.User)      // 이로 인해 UserId라는 컬럼 생성
         db.Post.hasMany(db.Comment)
         db.Post.hasMany(db.Image)
-        db.Post.belongsToMany(db.User, { through: 'Like', as: 'Likers' })
+        db.Post.belongsToMany(db.User, { through: 'Like', as: 'Likers' })   // Post - Like - User로 연결된 관계로부터 가져올 때에는 Likers라는 이름으로 구분지어 데이터를 조인한다!
         db.Post.belongsToMany(db.Hashtag, { through: 'PostHashtag' })
         db.Post.belongsTo(db.Post, { as: 'Retweet' })   // 자기 자신 테이블을 참조한다(RetweetId 컬럼 생성).
     }

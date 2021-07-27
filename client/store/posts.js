@@ -34,6 +34,18 @@ export const mutations = {
     },
     removeImagePath(state, payload) {
         state.imagePaths.splice(payload, 1)
+    },
+    likePost(state, payload) {
+        // 좋아요를 눌렀으면 먼저 좋아요 누른 그 게시글을 먼저 찾는다.
+        const index = state.mainPosts.findIndex(v => v.id === payload.postId)
+        state.mainPosts[index].Likers.push({
+            id: payload.userId
+        })
+    },
+    unlikePost(state, payload) {
+        const index = state.mainPosts.findIndex(v => v.id === payload.postId)   // 게시글 찾고
+        const userIndex = state.mainPosts[index].Likers.findIndex(v => v.id === payload.userId)     // 게시글 내의 Likers 배열에서 유저 찾고
+        state.mainPosts[index].Likers.splice(userIndex, 1)     // 지워준다.
     }
 }
 
@@ -108,5 +120,45 @@ export const actions = {
             .catch((err) => {
                 console.error(err)
             })
-    }   
+    },
+    retweet({ commit }, payload) {
+        this.$axios.post(`/post/${payload.postId}/retweet`, {}, {
+            withCredentials: true
+        })
+            .then((res) => {
+                console.log('리트윗 응답 데이터 : ', res.data)
+                commit('addMainPost', res.data)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+    },
+    likePost({ commit }, payload) {
+        this.$axios.post(`/post/${payload.postId}/like`, {}, {
+            withCredentials: true
+        })
+            .then((res) => {
+                commit('likePost', {
+                    userId: res.data.userId,
+                    postId: payload.postId
+                })
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+    },
+    unlikePost({ commit }, payload) {
+        this.$axios.delete(`/post/${payload.postId}/like`, {
+            withCredentials: true
+        })
+            .then((res) => {
+                commit('unlikePost', {
+                    userId: res.data.userId,
+                    postId: payload.postId
+                })
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+    }
 }

@@ -20,16 +20,22 @@
 
             <!-- 게시글 옵션들 -->
             <v-card-actions>
+                <!-- 리트윗 -->
                 <v-btn text color="orange">
                     <v-icon>mdi-twitter-retweet</v-icon>
                 </v-btn>
-                <v-btn text color="orange">
-                    <v-icon>mdi-heart-outline</v-icon>
+
+                <!-- 좋아요 -->
+                <v-btn text color="orange" @click="onClickHeart">
+                    <v-icon>{{ heartIcon }}</v-icon>
                 </v-btn>
+
+                <!-- 댓글 창 여닫기 -->
                 <v-btn text color="orange" @click="onToggleComment">
                     <v-icon>mdi-comment-outline</v-icon>
                 </v-btn>
 
+                <!-- 삭제 / 수정 팝업 -->
                 <v-menu offset-y open-on-hover>
                     <template v-slot:activator="{ on }">
                         <v-btn text color="orange" v-on="on">
@@ -91,6 +97,18 @@ export default {
             commentOpened: false
         }
     },
+    computed: {
+        me() {
+            return this.$store.state.users.me
+        },
+        liked() {
+            const me = this.$store.state.users.me
+            return !!(this.post.Likers || []).find(v => v.id === (me && me.id))    // 해당 포스트 라이커 배열 중에 내가 있는가?
+        },
+        heartIcon() {
+            return this.liked ? 'mdi-heart' : 'mdi-heart-outline'
+        }
+    },
     methods: {
         onRemovePost() {
             this.$store.dispatch('posts/remove', {
@@ -109,6 +127,30 @@ export default {
             }
 
             this.commentOpened = !this.commentOpened
+        },
+        onRetweet() {
+            if (!this.me) {
+                return alert('로그인이 필요합니다.')
+            }
+
+            this.$store.dispatch('posts/retweet', {
+                postId: this.post.id
+            })
+        },
+        onClickHeart() {
+            if (!this.me) {
+                return alert('로그인이 필요합니다.')
+            }
+
+            if (this.liked) {
+                return this.$store.dispatch('posts/unlikePost', {
+                    postId: this.post.id
+                })
+            }
+
+            return this.$store.dispatch('posts/likePost', {
+                postId: this.post.id
+            })
         }
     }
 };

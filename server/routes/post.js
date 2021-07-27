@@ -32,7 +32,6 @@ router.post('/images', isLoggedIn, upload.array('image'), (req, res) => {
         upload.array('image')로 폼 데이터 해석해 req 객체에 files라는 속성에 추가한 후
         여기 콜백으로 빠진다.
     */
-    console.log('req.files : ', req.files)
 
     // 프론트에 잘 도착했다고 현재 시간을 섞어 만든 파일명으로 응답해 준다.
     res.json(req.files.map(v => v.filename))
@@ -80,6 +79,10 @@ router.post('/', isLoggedIn, async (req, res, next) => {
                 attributes: ['id', 'nickname']      // 해당 속성만 가져와서 포함 시킨다.
             }, {
                 model: db.Image     // 참조 관계에 있는 Image 정보를 가져온다(일대다이므로 배열로 가져온다).
+            }, {
+                model: db.User,
+                as: 'Likers',
+                attributes: ['id']
             }]
         })
 
@@ -241,6 +244,7 @@ router.delete('/:id/like', isLoggedIn, async (req, res, next) => {
         if (!post) {
             return res.status(404).send('게시글이 존재하지 않습니다.')
         }
+
         await post.removeLiker(req.user.id)
         res.status(200).json({ userId: req.user.id })
     } catch (err) {
