@@ -2,7 +2,7 @@
     <v-container>
         <PostForm v-if="me" />
         <div>
-            <PostCard v-for="p in mainPosts" :key="p.id" :post="p" />
+            <PostCard v-for="(p, idx) in mainPosts" :key="idx" :post="p" />
         </div>
     </v-container>
 </template>
@@ -32,11 +32,18 @@ export default {
             return this.$store.state.posts.hasMorePost
         }
     },
-    // nuxt에서 제공하는 기능이다.
-    // 페이지가 처음 마운트 되기 전에, 데이터를 로드하는 것이다.
+    /*
+        nuxt에서 제공하는 기능이다.
+        페이지가 처음 마운트 되기 전에, 데이터를 로드하는 것이다.
+        
+        개별 페이지마다 가져올 데이터를 명시한다.
+        Promise 작업이므로 return을 붙여준다.
+        동시에, 해당 액션에서는 async await을 사용하여
+        서버와 동기 작업을 처리해야 한다.
+    */
     fetch({ store }) {
         // 액션을 호출해 서버에서 데이터를 가져와 state에 셋팅한다.
-        return store.dispatch('posts/loadPosts', { reset: true })
+        return store.dispatch('posts/loadPosts')
     },
     mounted() {
         // 브라우저 객체 window는 mounted 됐을 때에 접근 가능하다.

@@ -26,7 +26,6 @@ export const mutations = {
         state.mainPosts[index].comments.unshift(payload)
     },
     loadPosts(state, payload) {
-        console.log('loadPosts Mutation payload : ', payload)
         state.mainPosts = state.mainPosts.concat(payload)
         state.hasMorePost = payload.length === limit      // 가져온 게시물이 limit 미만이라면 다음은 없다.
     },
@@ -41,7 +40,7 @@ export const mutations = {
 export const actions = {
     add({ commit, state }, payload) {
         // 서버에 게시글 등록 요청 보냄
-        this.$axios.post('http://localhost:3085/post', {
+        this.$axios.post('/post', {
             content: payload.content,
             image: state.imagePaths
         }, {
@@ -56,7 +55,7 @@ export const actions = {
     },
     remove({ commit }, payload) {
         // get, delete의 경우는 request body가 없기 때문에, 두 번째 인자가 바로 옵션이다.
-        this.$axios.delete(`http://localhost:3085/post/${payload.postId}`, {
+        this.$axios.delete(`/post/${payload.postId}`, {
             withCredentials: true
         })
             .then((res) => {
@@ -67,7 +66,7 @@ export const actions = {
             })
     },
     addComment({ commit }, payload) {
-        this.$axios.post(`http://localhost:3085/post/${payload.postId}/comment`, {
+        this.$axios.post(`/post/${payload.postId}/comment`, {
             content: payload.content
         }, {
             withCredentials: true
@@ -81,7 +80,7 @@ export const actions = {
         
     },
     loadComments({ commit }, payload) {
-        this.$axios.get(`http://localhost:3085/post/${payload.postId}/comments`)
+        this.$axios.get(`/post/${payload.postId}/comments`)
             .then((res) => {
                 commit('loadComments', res.data)
             })
@@ -89,20 +88,18 @@ export const actions = {
                 console.error(err)
             })
     },
-    loadPosts({ commit, state }) {    
-        if (state.hasMorePost) {
-            this.$axios.get(`http://localhost:3085/posts?offset=${state.mainPosts.length}&limit=${limit}`)
-                .then((res) => {
-                    console.log('loadPosts response data : ', res.data)
-                    commit('loadPosts', res.data)
-                })
-                .catch((err) => {
-                    console.error(err)
-                })
+    async loadPosts({ commit, state }) {
+        try {
+            if (state.hasMorePost) {
+                const res = await this.$axios.get(`/posts?offset=${state.mainPosts.length}&limit=${limit}`)
+                commit('loadPosts', res.data)
+            }
+        } catch (err) {
+            console.error(err)
         }
     },
     uploadImages({ commit }, payload) {
-        this.$axios.post('http://localhost:3085/post/images', payload, { 
+        this.$axios.post('/post/images', payload, { 
             withCredentials: true
         })
             .then((res) => {

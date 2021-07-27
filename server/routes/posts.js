@@ -8,7 +8,6 @@ router.get('/', async (req, res, next) => {     // GET /posts?offset=10&limit=10
     try {
         console.log('GET /posts')
         const posts = await db.Post.findAll({
-            raw: true,      // dataValues만 추출되게
             include: [{
                 model: db.User,
                 attributes: ['id', 'nickname']

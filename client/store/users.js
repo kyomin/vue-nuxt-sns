@@ -62,20 +62,19 @@ export const mutations = {
 
 // 비동기 작업은 액션에 위임한다.
 export const actions = {
-    loadUser({ commit }) {
-        this.$axios.get('http://localhost:3085/user', {
-            withCredentials: true
-        })
-            .then((res) => {
-                commit('setme', res.data)
+    async loadUser({ commit }) {
+        try {
+            const res = await this.$axios.get('/user', {
+                withCredentials: true
             })
-            .catch((err) => {
-                console.error(err)
-            })
+            commit('setme', res.data)
+        } catch (err) {
+            console.error(err)
+        }
     },
     signup({ commit }, payload) {
         // nuxt 설정에 axios를 등록했기 때문에, 다음과 같이 접근이 가능하다.
-        this.$axios.post('http://localhost:3085/user', {
+        this.$axios.post('/user', {
             email: payload.email,
             nickname: payload.nickname,
             password: payload.password,
@@ -89,7 +88,7 @@ export const actions = {
             })
     },
     login({ commit }, payload) {
-        this.$axios.post('http://localhost:3085/user/login', {
+        this.$axios.post('/user/login', {
             email: payload.email,
             password: payload.password
         }, { withCredentials: true })
@@ -102,7 +101,7 @@ export const actions = {
             })
     },
     logout({ commit }) {
-        this.$axios.post('http://localhost:3085/user/logout', {}, { withCredentials: true })
+        this.$axios.post('/user/logout', {}, { withCredentials: true })
             .then((res) => {
                 console.log('logout response data : ', res.data)
                 commit('setme', null)

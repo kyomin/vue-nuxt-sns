@@ -29,7 +29,7 @@
                         <v-text-field 
                             v-model="nickname" 
                             label="닉네임" 
-                            type="nickname"
+                            type="text"
                             :rules="nicknameRules"
                             required 
                         />
