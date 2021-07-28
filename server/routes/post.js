@@ -208,7 +208,7 @@ router.post('/:id/retweet', async (req, res, next) => {
                 attributes: ['id', 'nickname']
             }, {
                 model: db.Post,
-                as: 'Retweet',       // 원본 table alias
+                as: 'Retweet',       // 원본 table alias. Post 객체를 이 속성에 담는다.
                 include: [{
                     model: db.User,
                     attributes: ['id', 'nickname']

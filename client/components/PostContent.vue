@@ -1,0 +1,42 @@
+<template>
+    <div>
+        <!-- 게시글 이미지들 -->
+        <PostImages :images="post.Images || []" />
+
+        <!-- 게시글 작성자 -->
+        <v-card-title>
+            <h3>
+                <nuxt-link :to="'/user/' + post.id">{{ post.User.nickname }}</nuxt-link>
+            </h3>
+        </v-card-title>
+
+        <!-- 게시글 내용 -->
+        <v-card-text>
+            <div>
+                <div>{{ post.content }}</div>
+            </div>
+        </v-card-text>
+    </div>
+</template>
+
+<script>
+import PostImages from './PostImages'
+
+export default {
+    components: {
+        PostImages
+    },
+    props: {
+        post: {
+            type: Object
+        }
+    }
+};
+</script>
+
+<style scoped>
+a {
+    text-decoration: none;
+    color: inherit;
+}
+</style>
