@@ -98,4 +98,43 @@ router.post('/logout', isLoggedIn, (req, res) => {
     return res.status(200).send('로그아웃 되었습니다.')
 })
 
+router.post('/:id/follow', isLoggedIn, async (req, res, next) => {
+    try {
+        const me = await db.User.findOne({
+            where: { id: req.user.id }
+        })
+        await me.addFollowing(req.params.id)
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
+})
+
+router.delete('/:id/follow', isLoggedIn, async (req, res, next) => {
+    try {
+        const me = await db.User.findOne({
+            where: { id: req.user.id }
+        })
+        await me.removeFollowing(req.params.id)
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
+})
+
+router.patch('/nickname', isLoggedIn, async (req, res, next) => {
+    try {
+        await db.User.update({
+            nickname: req.body.nickname
+        }, {
+            where: { id: req.user.id }
+        })
+
+        req.send(req.body.nickname)
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
+})
+
 module.exports = router

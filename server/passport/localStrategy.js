@@ -17,10 +17,25 @@ module.exports = () => {
 
             // 사용자가 DB에 등록돼 있으면 비밀번호 검증
             // first: plain password, second: bcrypted password
-            const result = await bcrypt.compare(password, exUser.password)
-            console.log('compare password result : ', result)
+            const result = await bcrypt.compare(password, exUser.password)        
+
             if (result) {
-                return done(null, exUser)
+                // 로그인 시 클라이언트 측에 보내줄 데이터는 가공해서 보내준다.
+                const resUser = await db.User.findOne({ 
+                    where: { email },
+                    attributes: ['id', 'nickname'],
+                    include: [{
+                        model: db.User,
+                        as: 'Followings',
+                        attribute: ['id']
+                    }, {
+                        model: db.User,
+                        as: 'Followers',
+                        attribute: ['id']
+                    }]
+                })
+
+                return done(null, resUser)
             } else {
                 return done(null, false, { reason: '비밀번호가 틀립니다.' })
             }

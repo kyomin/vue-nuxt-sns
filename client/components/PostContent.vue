@@ -7,6 +7,8 @@
         <v-card-title>
             <h3>
                 <nuxt-link :to="'/user/' + post.id">{{ post.User.nickname }}</nuxt-link>
+                <v-btn v-if="canFollow" @click="onFollow">팔로우</v-btn>
+                <v-btn v-if="canUnfollow" @click="onUnfollow">언팔로우</v-btn>
             </h3>
         </v-card-title>
 
@@ -29,6 +31,37 @@ export default {
     props: {
         post: {
             type: Object
+        }
+    },
+    computed: {
+        me() {
+            return this.$store.state.users.me
+        },
+        canFollow() {
+            /* 
+                어떤 상황에서 게시글 닉네임 옆에 팔로우 버튼을 활성화해야 할까?
+                
+                1. 우선 내가 로그인 한 상태여야 한다.
+                2. 현재 게시글을 작성한 사람이 내가 아니어야 한다.
+                3. 내가 팔로잉 한 목록 중에 현 게시글의 작성자가 없어야 한다. 
+            */
+            return this.me && this.post.User.id !== this.me.id && !this.me.Followings.find(v => v.id === this.post.User.id)
+        },
+        canUnfollow() {
+            // 위의 3번 조건에서 내가 팔로잉 한 목록 중에 있어야 언팔로우 버튼을 활성화시킨다.
+            return this.me && this.post.User.id !== this.me.id && this.me.Followings.find(v => v.id === this.post.User.id)
+        }
+    },
+    methods: {
+        onFollow() {
+            this.$store.dispatch('users/follow', {
+                userId: this.post.User.id
+            })
+        },
+        onUnfollow() {
+            this.$store.dispatch('users/unfollow', {
+                userId: this.post.User.id
+            })
         }
     }
 };

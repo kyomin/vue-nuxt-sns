@@ -91,7 +91,10 @@ export default {
                         this.contentRules = []
                     })
                     .catch((err) => {
-
+                        console.error(err)
+                        this.hideDetails = false
+                        this.success = false
+                        this.successMessages = ''
                     })
             }
         },

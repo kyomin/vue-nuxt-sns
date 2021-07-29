@@ -13,11 +13,6 @@ export default {
     components: {
         PostCard
     },
-    data() {
-        return {
-            name: 'Nuxt.js'
-        }
-    },
     computed: {
         me() {
             return this.$store.state.users.me

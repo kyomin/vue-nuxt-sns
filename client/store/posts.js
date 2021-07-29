@@ -16,9 +16,7 @@ export const mutations = {
         state.mainPosts.splice(index, 1)
     },
     addComment(state, payload) {
-        console.log('payload.postId : ', payload.postId)
         const index = state.mainPosts.findIndex(v => v.id === payload.postId)
-        console.log('index : ', index)
         state.mainPosts[index].comments.unshift(payload)
     },
     loadComments(state, payload) {
@@ -51,19 +49,23 @@ export const mutations = {
 
 export const actions = {
     add({ commit, state }, payload) {
-        // 서버에 게시글 등록 요청 보냄
-        this.$axios.post('/post', {
-            content: payload.content,
-            image: state.imagePaths
-        }, {
-            withCredentials: true
+        return new Promise((resolve, reject) => {
+            this.$axios.post('/post', {
+                content: payload.content,
+                image: state.imagePaths
+            }, {
+                withCredentials: true
+            })
+                .then((res) => {
+                    commit('addMainPost', res.data)
+                    resolve(res.data)
+                })
+                .catch((err) => {
+                    console.error(err)
+                    alert(err.response.data)
+                    reject(err)
+                })
         })
-            .then((res) => {
-                commit('addMainPost', res.data)
-            })
-            .catch((err) => {
-                console.error(err)
-            })
     },
     remove({ commit }, payload) {
         // get, delete의 경우는 request body가 없기 때문에, 두 번째 인자가 바로 옵션이다.

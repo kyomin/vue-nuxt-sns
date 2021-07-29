@@ -29,8 +29,8 @@ export const mutations = {
         state.followerList.push(payload)
     },
     removeFollowing(state, payload) {
-        const index = state.followingList.findIndex(v => v.id === payload.id)
-        state.followingList.splice(index, 1)
+        const index = state.me.Followings.findIndex(v => v.id === payload.userId)
+        state.me.Followings.splice(index, 1)
     },
     removeFollower(state, payload) {
         const index = state.followerList.findIndex(v => v.id === payload.id)
@@ -57,6 +57,9 @@ export const mutations = {
 
         state.followerList = state.followerList.concat(fakeUsers)
         state.hasMoreFollowers = fakeUsers.length === limit
+    },
+    following(state, payload) {
+        state.me.Followings.push({ id: payload.userId })
     }
 }
 
@@ -72,20 +75,22 @@ export const actions = {
             console.error(err)
         }
     },
-    signup({ commit }, payload) {
-        // nuxt 설정에 axios를 등록했기 때문에, 다음과 같이 접근이 가능하다.
-        this.$axios.post('/user', {
-            email: payload.email,
-            nickname: payload.nickname,
-            password: payload.password,
+    signup({ }, payload) {
+        return new Promise((resolve, reject) => {
+            this.$axios.post('/user', {
+                email: payload.email,
+                nickname: payload.nickname,
+                password: payload.password,
+            })
+                .then((res) => {
+                    console.log('signup response data : ', res.data)
+                    resolve(res.data)
+                })
+                .catch((err) => {
+                    console.error(err)
+                    reject(err)
+                })
         })
-            .then((res) => {
-                console.log('signup response data : ', res.data)
-                commit('setme', res.data)
-            })
-            .catch((err) => {
-                console.error(err)
-            })
     },
     login({ commit }, payload) {
         this.$axios.post('/user/login', {
@@ -134,5 +139,27 @@ export const actions = {
         if (state.hasMoreFollowers) {
             commit('loadFollowers')
         }
+    },
+    following({ commit }, payload) {
+        this.$axios.post(`/user/${payload.userId}/follow`, {}, {
+            withCredentials: true
+        })
+            .then(() => {
+                commit('following', payload)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+    },
+    unfollowinf({ commit }, payload) {
+        this.$axios.delete(`/user/${payload.userId}/follow`, {
+            withCredentials: true
+        })
+            .then(() => {
+                commit('removeFollowing', payload)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
     }
 }

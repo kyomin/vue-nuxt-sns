@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
         db.User.hasMany(db.Post)
         db.User.hasMany(db.Comment)
         db.User.belongsToMany(db.Post, { through: 'Like', as: 'Liked' })  // 여러 게시물에 좋아요 누르는 경우. hasMany와 중복 id 갖는거 처리한다.
-        db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followers', foreignKey: 'followingId' })   // 외래키의 followingId는 남의 ID이고, 이를 통해 나를 팔로워하는 사람들을 가져오겠다는 의미이다.
+        db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followers', foreignKey: 'followingId' })   // 외래키의 followingId는 나의 ID이고, 이를 통해 나를 팔로워하는 사람들을 가져오겠다는 의미이다.
         db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followings', foreignKey: 'followerId' })
     }
 

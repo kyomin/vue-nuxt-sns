@@ -91,6 +91,7 @@ export default {
                     password: this.password
                 })
                     .then(() => {
+                        alert('회원가입 되었습니다.\n다시 로그인해 주십시오')
                         this.$router.push({
                             path: '/'
                         })
