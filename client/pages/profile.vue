@@ -80,7 +80,7 @@ export default {
                     this.nicknameRules = []
                 })
                 .catch((err) => {
-
+                    console.error(err)
                 })
         },
         removeFollowing(id) {

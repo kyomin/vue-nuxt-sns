@@ -130,7 +130,7 @@ router.patch('/nickname', isLoggedIn, async (req, res, next) => {
             where: { id: req.user.id }
         })
 
-        req.send(req.body.nickname)
+        res.send(req.body.nickname)
     } catch (err) {
         console.error(err)
         next(err)
