@@ -26,6 +26,8 @@ const upload = multer({
     }),
     limit: { fileSize: 20 * 1024 * 1024 }   // 20MB (1KB = 1024 = 2^10)
 })
+
+/* 이미지 저장 */
 router.post('/images', isLoggedIn, upload.array('image'), (req, res) => {
     /* 
         isLoggedIn로 인증 후, 
@@ -37,6 +39,7 @@ router.post('/images', isLoggedIn, upload.array('image'), (req, res) => {
     res.json(req.files.map(v => v.filename))
 })
 
+/* 게시글 등록 */
 router.post('/', isLoggedIn, async (req, res, next) => {
     try {
         const hashtags = req.body.content.match(/#[^\s#]+/g)
@@ -93,6 +96,7 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     }
 })
 
+/* 게시들 코멘트 작성 */
 router.post('/:id/comment', isLoggedIn, async (req, res, next) => {     // :id => 동적으로 변할 수 있는 부분. params.id로 접근
     try {
         // 예외 처리!
@@ -124,6 +128,7 @@ router.post('/:id/comment', isLoggedIn, async (req, res, next) => {     // :id =
     }
 })
 
+/* 게시글에 달린 코멘트 불러오기 */
 router.get('/:id/comments', async (req, res, next) => {
     try {
         // 예외 처리!
@@ -150,6 +155,7 @@ router.get('/:id/comments', async (req, res, next) => {
     }
 })
 
+/* 게시글 삭제 */
 router.delete('/:id', async (req, res,next) => {
     try {
         await db.Post.destroy({
@@ -165,6 +171,7 @@ router.delete('/:id', async (req, res,next) => {
     }
 })
 
+/* 게시글 리트윗하기 */
 router.post('/:id/retweet', async (req, res, next) => {
     try {
         const post = await db.Post.findOne({
@@ -224,6 +231,7 @@ router.post('/:id/retweet', async (req, res, next) => {
     }
 })
 
+/* 게시글 좋아요 */
 router.post('/:id/like', isLoggedIn, async (req, res, next) => {
     try {
         const post = await db.Post.findOne({ where: { id: req.params.id } })
@@ -238,6 +246,7 @@ router.post('/:id/like', isLoggedIn, async (req, res, next) => {
     }
 })
 
+/* 게시글 좋아요 취소 */
 router.delete('/:id/like', isLoggedIn, async (req, res, next) => {
     try {
         const post = await db.Post.findOne({ where: { id: req.params.id } })

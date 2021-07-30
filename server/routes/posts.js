@@ -4,7 +4,7 @@ const db = require('../models')
 
 const router = express.Router()
 
-router.get('/', async (req, res, next) => {     // GET /posts?offset=10&limit=10
+router.get('/', async (req, res, next) => {     // GET /posts?offset=10&limit=10(params가 아닌, query 속성에 담겨온다)
     try {
         console.log('GET /posts')
         const posts = await db.Post.findAll({

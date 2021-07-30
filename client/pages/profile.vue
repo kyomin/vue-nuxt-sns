@@ -62,8 +62,14 @@ export default {
         }
     },
     fetch({ store }) {
-        store.dispatch('users/loadFollowings')
-        return store.dispatch('users/loadFollowers')
+        /* 
+            여기서 호출하는 follow 로드 액션은 초기에 이 페이지 진입 시 하는 것이다.
+            따라서 다시 처음부터 진행(이전에 로드했던 정보들 다시 처음 limit부터 시작하게)하려면
+            이 부분에서 offset 값을 전달하는 식으로 분기 처리한다.
+            액션의 payload에서 받아서 값이 있는지, 없는지로 판단한다.
+        */
+        store.dispatch('users/loadFollowings', { offset: 0 })
+        return store.dispatch('users/loadFollowers', { offset: 0 })
     },
     methods: {
         onChangeNickname() {

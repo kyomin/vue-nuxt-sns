@@ -54,12 +54,12 @@ export default {
     },
     methods: {
         onFollow() {
-            this.$store.dispatch('users/follow', {
+            this.$store.dispatch('users/following', {
                 userId: this.post.User.id
             })
         },
         onUnfollow() {
-            this.$store.dispatch('users/unfollow', {
+            this.$store.dispatch('users/unfollowing', {
                 userId: this.post.User.id
             })
         }

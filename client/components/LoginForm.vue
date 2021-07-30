@@ -62,6 +62,8 @@ export default {
                     password: this.password
                 })
                     .then(() => {
+                        this.email = ''
+                        this.password = ''
                         this.$router.push({
                             path: '/'
                         })

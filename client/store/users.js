@@ -6,12 +6,6 @@ export const state = () => ({
     hasMoreFollowers: true
 })
 
-/*
-    실무에서는 limit 방식이 아니라 last id 방식을 많이 쓴다.
-    더보기 버튼을 누르는 도중에 서버의 데이터가 바뀔 수 있기 때문이다.
-*/
-const totalFollowings = 6
-const totalFollowers = 8
 const limit = 3
 
 // 뮤테이션에서는 비동기 작업 처리를 하지 못한다.
@@ -36,27 +30,21 @@ export const mutations = {
         const index = state.followerList.findIndex(v => v.id === payload.id)
         state.followerList.splice(index, 1)
     },
-    loadFollowings(state) {
-        const diff = totalFollowings - state.followingList.length
-
-        const fakeUsers = Array(diff > limit ? limit : diff).fill().map(v => ({
-            id: Math.random().toString(),
-            nickname: Math.floor(Math.random() * 1000)
-        }))
-
-        state.followingList = state.followingList.concat(fakeUsers)
-        state.hasMoreFollowings = fakeUsers.length === limit
+    loadFollowings(state, payload) {
+        if (payload.offset === 0) {
+            state.followingList = payload.data
+        } else {
+            state.followingList = state.followingList.concat(payload.data)
+        }
+        state.hasMoreFollowings = payload.data.length === limit
     },
-    loadFollowers(state) {
-        const diff = totalFollowers - state.followerList.length
-
-        const fakeUsers = Array(diff > limit ? limit : diff).fill().map(v => ({
-            id: Math.random().toString(),
-            nickname: Math.floor(Math.random() * 1000)
-        }))
-
-        state.followerList = state.followerList.concat(fakeUsers)
-        state.hasMoreFollowers = fakeUsers.length === limit
+    loadFollowers(state, payload) {
+        if (payload.offset === 0) {
+            state.followerList = payload.data
+        } else {
+            state.followerList = state.followerList.concat(payload.data)
+        }
+        state.hasMoreFollowers = payload.data.length === limit
     },
     following(state, payload) {
         state.me.Followings.push({ id: payload.userId })
@@ -108,8 +96,10 @@ export const actions = {
     logout({ commit }) {
         this.$axios.post('/user/logout', {}, { withCredentials: true })
             .then((res) => {
-                console.log('logout response data : ', res.data)
                 commit('setme', null)
+                this.$router.push({
+                    path: '/'
+                })
             })
             .catch((err) => {
                 console.error(err)
@@ -138,15 +128,53 @@ export const actions = {
     removeFollower({ commit }, payload) {
         commit('removeFollower', payload)
     },
-    loadFollowings({ commit, state }) {
-        if (state.hasMoreFollowings) {
-            commit('loadFollowings')
+    loadFollowings({ commit, state }, payload) {
+        // 초기 로딩도 아니고, 더 불러올 팔로워도 없다면 바로 함수를 끝내 아무 작업도 하지 않는다.
+        if (!(payload && payload.offset === 0) && !state.hasMoreFollowings) {
+            return
         }
+
+        let offset = state.followingList.length
+        if (payload && payload.offset === 0) {  // 초기 페이지 로딩인 경우
+            offset = 0
+        }
+
+        return this.$axios.get(`/user/${state.me.id}/followings?limit=3&offset=${offset}`, {
+            withCredentials: true
+        })
+            .then((res) => {
+                commit('loadFollowings', {
+                    data: res.data,
+                    offset
+                })
+            })
+            .catch((err) => {
+                console.error(err)
+            })
     },
-    loadFollowers({ commit, state }) {
-        if (state.hasMoreFollowers) {
-            commit('loadFollowers')
+    loadFollowers({ commit, state }, payload) {
+        // 초기 로딩도 아니고, 더 불러올 팔로워도 없다면 바로 함수를 끝내 아무 작업도 하지 않는다.
+        if (!(payload && payload.offset === 0) && !state.hasMoreFollowers) {
+            return
         }
+
+        let offset = state.followerList.length
+        if (payload && payload.offset === 0) {  // 초기 페이지 로딩인 경우
+            offset = 0
+        }
+
+        return this.$axios.get(`/user/${state.me.id}/followers?limit=3&offset=${offset}`, {
+            withCredentials: true
+        })
+            .then((res) => {
+                commit('loadFollowers', {
+                    data: res.data,
+                    offset
+                })
+            })
+            .catch((err) => {
+                console.error(err)
+            })
     },
     following({ commit }, payload) {
         this.$axios.post(`/user/${payload.userId}/follow`, {}, {
@@ -159,7 +187,7 @@ export const actions = {
                 console.error(err)
             })
     },
-    unfollowinf({ commit }, payload) {
+    unfollowing({ commit }, payload) {
         this.$axios.delete(`/user/${payload.userId}/follow`, {
             withCredentials: true
         })
