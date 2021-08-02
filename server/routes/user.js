@@ -130,6 +130,20 @@ router.delete('/:id/follow', isLoggedIn, async (req, res, next) => {
     }
 })
 
+/* 팔로워(나를 팔로잉 하는 사람) 삭제 */
+router.delete('/:id/follower', isLoggedIn, async (req, res, next) => {
+    try {
+        const me = await db.User.findOne({
+            where: { id: req.user.id }
+        })
+        await me.removeFollower(req.params.id)
+        res.send(req.params.id)
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
+})
+
 /* 닉네임 변경 */
 router.patch('/nickname', isLoggedIn, async (req, res, next) => {
     try {

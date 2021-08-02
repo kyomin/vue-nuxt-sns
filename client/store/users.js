@@ -23,11 +23,15 @@ export const mutations = {
         state.followerList.push(payload)
     },
     removeFollowing(state, payload) {
-        const index = state.me.Followings.findIndex(v => v.id === payload.userId)
+        let index = state.me.Followings.findIndex(v => v.id === payload.userId)
         state.me.Followings.splice(index, 1)
+        index = state.followingList.findIndex(v => v.id === payload.userId)
+        state.followingList.splice(index, 1)
     },
     removeFollower(state, payload) {
-        const index = state.followerList.findIndex(v => v.id === payload.id)
+        let index = state.followerList.findIndex(v => v.id === payload.userId)
+        state.followerList.splice(index, 1)
+        index = state.followerList.findIndex(v => v.id === payload.userId)
         state.followerList.splice(index, 1)
     },
     loadFollowings(state, payload) {
@@ -81,7 +85,7 @@ export const actions = {
         })
     },
     login({ commit }, payload) {
-        this.$axios.post('/user/login', {
+        return this.$axios.post('/user/login', {
             email: payload.email,
             password: payload.password
         }, { withCredentials: true })
@@ -94,7 +98,7 @@ export const actions = {
             })
     },
     logout({ commit }) {
-        this.$axios.post('/user/logout', {}, { withCredentials: true })
+        return this.$axios.post('/user/logout', {}, { withCredentials: true })
             .then((res) => {
                 commit('setme', null)
                 this.$router.push({
@@ -106,7 +110,7 @@ export const actions = {
             })
     },
     changeNickname({ commit }, payload) {
-        this.$axios.patch('/user/nickname', { nickname: payload.nickname }, {
+        return this.$axios.patch('/user/nickname', { nickname: payload.nickname }, {
             withCredentials: true
         })
             .then(() => {
@@ -121,12 +125,6 @@ export const actions = {
     },
     addFollower({ commit }, payload) {
         commit('addFollower', payload)
-    },
-    removeFollowing({ commit }, payload) {
-        commit('removeFollowing', payload)
-    },
-    removeFollower({ commit }, payload) {
-        commit('removeFollower', payload)
     },
     loadFollowings({ commit, state }, payload) {
         // 초기 로딩도 아니고, 더 불러올 팔로워도 없다면 바로 함수를 끝내 아무 작업도 하지 않는다.
@@ -177,7 +175,7 @@ export const actions = {
             })
     },
     following({ commit }, payload) {
-        this.$axios.post(`/user/${payload.userId}/follow`, {}, {
+        return this.$axios.post(`/user/${payload.userId}/follow`, {}, {
             withCredentials: true
         })
             .then(() => {
@@ -188,11 +186,22 @@ export const actions = {
             })
     },
     unfollowing({ commit }, payload) {
-        this.$axios.delete(`/user/${payload.userId}/follow`, {
+        return this.$axios.delete(`/user/${payload.userId}/follow`, {
             withCredentials: true
         })
             .then(() => {
                 commit('removeFollowing', payload)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+    },
+    removeFollower({ commit }, payload) {
+        return this.$axios.delete(`/user/${payload.userId}/follower`, {
+            withCredentials: true
+        })
+            .then(() => {
+                commit('removeFollower', payload)
             })
             .catch((err) => {
                 console.error(err)

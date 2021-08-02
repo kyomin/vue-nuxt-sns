@@ -23,8 +23,11 @@ module.exports = () => {
                 // 로그인 시 클라이언트 측에 보내줄 데이터는 가공해서 보내준다.
                 const resUser = await db.User.findOne({ 
                     where: { email },
-                    attributes: ['id', 'nickname'],
+                    attributes: ['id', 'email', 'nickname'],
                     include: [{
+                        model: db.Post,
+                        attributes: ['id']
+                    }, {
                         model: db.User,
                         as: 'Followings',
                         attribute: ['id']
