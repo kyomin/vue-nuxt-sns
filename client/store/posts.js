@@ -26,8 +26,12 @@ export const mutations = {
         state.mainPosts[index].comments.unshift(payload)
     },
     loadPosts(state, payload) {
-        state.mainPosts = state.mainPosts.concat(payload)
-        state.hasMorePost = payload.length === limit      // 가져온 게시물이 limit 미만이라면 다음은 없다.
+        if (payload.reset) {
+            state.mainPosts = payload.data
+        } else {
+            state.mainPosts = state.mainPosts.concat(payload.data)
+        }
+        state.hasMorePost = payload.data.length === limit      // 가져온 게시물이 limit 미만이라면 다음은 없다.
     },
     concatImagePaths(state, payload) {
         state.imagePaths = state.imagePaths.concat(payload)
@@ -104,13 +108,47 @@ export const actions = {
                 console.error(err)
             })
     },
-    loadPosts: throttle(async function({ commit, state }) {     // 한 번 실행되면, 3초가 지나기 전까지는 같은 함수가 실행되지 못 하게 한다.
+    loadPosts: throttle(async function({ commit, state }, payload) {     // 한 번 실행되면, 3초가 지나기 전까지는 같은 함수가 실행되지 못 하게 한다.
         try {
+            if (payload && payload.reset) {
+                const res = await this.$axios.get(`/posts?limit=${limit}`)
+                commit('loadPosts', {
+                    data: res.data,
+                    reset: true
+                })
+                return
+            }
+
             if (state.hasMorePost) {
-                console.log('state.mainPosts : ', state.mainPosts)
                 const lastPost = state.mainPosts[state.mainPosts.length - 1]
                 const res = await this.$axios.get(`/posts?lastId=${lastPost && lastPost.id}&limit=${limit}`)
-                commit('loadPosts', res.data)
+                commit('loadPosts', {
+                    data: res.data
+                })
+                return
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }, 3000),
+    loadUserPosts: throttle(async function({ commit, state }, payload) {     
+        try {
+            if (payload && payload.reset) {
+                const res = await this.$axios.get(`/user/${payload.userId}/posts?limit=${limit}`)
+                commit('loadPosts', {
+                    data: res.data,
+                    reset: true
+                })
+                return
+            }
+
+            if (state.hasMorePost) {
+                const lastPost = state.mainPosts[state.mainPosts.length - 1]
+                const res = await this.$axios.get(`/user/${payload.userId}/posts?lastId=${lastPost && lastPost.id}&limit=${limit}`)
+                commit('loadPosts', {
+                    data: res.data
+                })
+                return
             }
         } catch (err) {
             console.error(err)

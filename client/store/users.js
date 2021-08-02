@@ -1,9 +1,10 @@
 export const state = () => ({
-    me: null,    // me를 통해 로그인 여부를 확인한다.
+    me: null,       // 로그인 여부를 확인해 로그인한 유저 정보 me에 넣기
+    other: null,    // 남의 정보
     followingList: [],
     followerList: [],
     hasMoreFollowings: true,
-    hasMoreFollowers: true
+    hasMoreFollowers: true,
 })
 
 const limit = 3
@@ -12,6 +13,9 @@ const limit = 3
 export const mutations = {
     setme(state, payload) {
         state.me = payload
+    },
+    setOther(state, payload) {
+        state.other = payload
     },
     changeNickname(state, payload) {
         state.me.nickname = payload.nickname
@@ -63,6 +67,14 @@ export const actions = {
                 withCredentials: true
             })
             commit('setme', res.data)
+        } catch (err) {
+            console.error(err)
+        }
+    },
+    async loadOther({ commit }, payload) {
+        try {
+            const res = await this.$axios.get(`/user/${payload.userId}`)
+            commit('setOther', res.data)
         } catch (err) {
             console.error(err)
         }

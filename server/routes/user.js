@@ -13,6 +13,33 @@ router.get('/', isLoggedIn, async (req, res, next) => {
     res.json(user)
 })
 
+/* 다른 특정 사용자 정보 불러오기 */
+router.get('/:id', async (req, res, next) => {
+    try {
+        const user = await db.User.findOne({ 
+            where: { id: parseInt(req.params.id, 10) },
+            attributes: ['id', 'nickname'],
+            include: [{
+                model: db.Post,
+                attributes: ['id']
+            }, {
+                model: db.User,
+                as: 'Followings',
+                attribute: ['id']
+            }, {
+                model: db.User,
+                as: 'Followers',
+                attribute: ['id']
+            }]
+        })
+
+        return res.json(user)
+    } catch (err) {
+        console.error(err)
+        return next(err)
+    }
+})
+
 /* 회원가입 */
 router.post('/', isNotLoggedIn, async (req, res, next) => {
     try {
@@ -102,6 +129,44 @@ router.post('/logout', isLoggedIn, (req, res) => {
     return res.status(200).send('로그아웃 되었습니다.')
 })
 
+/* 다른 사람(특정 유저)의 게시글 불러오기 */
+router.get('/:id/posts', async (req, res, next) => {
+    try {
+        let where = {
+            UserId: parseInt(req.params.id, 10),
+            RetweetId: null
+        }
+        console.log('req.query.lastId : ', req.query.lastId)
+        if (req.query.lastId) {
+            where['id'] = {
+                [db.Sequelize.Op.lt]: parseInt(req.query.lastId, 10)
+            }
+        }
+
+        const posts = await db.Post.findAll({
+            where,
+            include: [{
+                model: db.User,
+                attributes: ['id', 'nickname']
+            }, {
+                model: db.Image
+            }, {
+                model: db.User,
+                through: 'Like',
+                as: 'Likers',
+                attributes: ['id']
+            }],
+            order: [['createdAt', 'DESC']],
+            limit: parseInt(req.query.limit, 10) || 0      // 가져올 개수
+        })
+
+        return res.json(posts)
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
+})
+
 /* 팔로잉 */
 router.post('/:id/follow', isLoggedIn, async (req, res, next) => {
     try {
@@ -109,7 +174,7 @@ router.post('/:id/follow', isLoggedIn, async (req, res, next) => {
             where: { id: req.user.id }
         })
         await me.addFollowing(req.params.id)
-        res.send(req.params.id) // 이래야 클라이언트 측 then으로 빠진다.
+        return res.send(req.params.id) // 이래야 클라이언트 측 then으로 빠진다.
     } catch (err) {
         console.error(err)
         next(err)
@@ -123,7 +188,7 @@ router.delete('/:id/follow', isLoggedIn, async (req, res, next) => {
             where: { id: req.user.id }
         })
         await me.removeFollowing(req.params.id)
-        res.send(req.params.id)
+        return res.send(req.params.id)
     } catch (err) {
         console.error(err)
         next(err)
@@ -137,7 +202,7 @@ router.delete('/:id/follower', isLoggedIn, async (req, res, next) => {
             where: { id: req.user.id }
         })
         await me.removeFollower(req.params.id)
-        res.send(req.params.id)
+        return res.send(req.params.id)
     } catch (err) {
         console.error(err)
         next(err)
@@ -153,8 +218,7 @@ router.patch('/nickname', isLoggedIn, async (req, res, next) => {
             where: { id: req.user.id }
         })
 
-        res.send(req.body.nickname)
-        res.send(req.params.id)
+        return res.send(req.body.nickname)
     } catch (err) {
         console.error(err)
         next(err)
@@ -174,7 +238,7 @@ router.get('/:id/followings', isLoggedIn, async (req, res, next) => {
             limit: parseInt(req.query.limit || 3, 10),
             offset: parseInt(req.query.offset || 0, 10)
         })
-        res.status(200).json(followings)
+        return res.json(followings)
     } catch (err) {
         console.error(err)
         next(err)
@@ -194,7 +258,7 @@ router.get('/:id/followers', isLoggedIn, async (req, res, next) => {
             limit: parseInt(req.query.limit || 3, 10),
             offset: parseInt(req.query.offset || 0, 10)
         })
-        res.status(200).json(followers)
+        return res.json(followers)
     } catch (err) {
         console.error(err)
         next(err)

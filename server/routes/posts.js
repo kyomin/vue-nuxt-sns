@@ -17,8 +17,6 @@ router.get('/', async (req, res, next) => {     // GET /posts?offset=10&limit=10
             }
         }
 
-        console.log('where : ', where)
-
         const posts = await db.Post.findAll({
             where,
             include: [{

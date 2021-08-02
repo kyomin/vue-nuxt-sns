@@ -16,11 +16,6 @@ export default {
         PostCard,
         PostForm
     },
-    data() {
-        return {
-            name: 'Nuxt.js'
-        }
-    },
     computed: {
         me() {
             return this.$store.state.users.me
@@ -43,7 +38,7 @@ export default {
     */
     fetch({ store }) {
         // 액션을 호출해 서버에서 데이터를 가져와 state에 셋팅한다.
-        return store.dispatch('posts/loadPosts')
+        return store.dispatch('posts/loadPosts', { reset: true })
     },
     mounted() {
         // 브라우저 객체 window는 mounted 됐을 때에 접근 가능하다.
