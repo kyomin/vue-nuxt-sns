@@ -1,3 +1,5 @@
+import throttle from "lodash.throttle"
+
 export const state = () => ({
     mainPosts: [],
     hasMorePost: true,  // 스크롤하여 더 가져올 데이터가 있는가?
@@ -102,16 +104,18 @@ export const actions = {
                 console.error(err)
             })
     },
-    async loadPosts({ commit, state }) {
+    loadPosts: throttle(async function({ commit, state }) {     // 한 번 실행되면, 3초가 지나기 전까지는 같은 함수가 실행되지 못 하게 한다.
         try {
             if (state.hasMorePost) {
-                const res = await this.$axios.get(`/posts?offset=${state.mainPosts.length}&limit=${limit}`)
+                console.log('state.mainPosts : ', state.mainPosts)
+                const lastPost = state.mainPosts[state.mainPosts.length - 1]
+                const res = await this.$axios.get(`/posts?lastId=${lastPost && lastPost.id}&limit=${limit}`)
                 commit('loadPosts', res.data)
             }
         } catch (err) {
             console.error(err)
         }
-    },
+    }, 3000),
     uploadImages({ commit }, payload) {
         this.$axios.post('/post/images', payload, { 
             withCredentials: true

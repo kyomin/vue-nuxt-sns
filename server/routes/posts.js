@@ -6,8 +6,21 @@ const router = express.Router()
 
 router.get('/', async (req, res, next) => {     // GET /posts?offset=10&limit=10(params가 아닌, query 속성에 담겨온다)
     try {
-        console.log('GET /posts')
+        // DB 쿼리문의 조건을 분기 처리한다. 
+        let where = {}
+        if (parseInt(req.query.lastId, 10)) {
+            where = {
+                id: {
+                    // lt(미만), lte(이하), gt(초과), gte(이상), ne(불일치), in, nin 등등
+                    [db.Sequelize.Op.lt]: parseInt(req.query.lastId, 10)    // less than(id 값은 증가할 수록 최신 게시글이므로)
+                }
+            }
+        }
+
+        console.log('where : ', where)
+
         const posts = await db.Post.findAll({
+            where,
             include: [{
                 model: db.User,
                 attributes: ['id', 'nickname']
@@ -28,7 +41,6 @@ router.get('/', async (req, res, next) => {     // GET /posts?offset=10&limit=10
                 }]
             }],
             order: [['createdAt', 'DESC']],
-            offset: parseInt(req.query.offset, 10) || 0,   // 시작 점 pointer (실무에선 생성, 삭제가 빈번히 일어나므로 잘 안 쓴다)
             limit: parseInt(req.query.limit, 10) || 0      // 가져올 개수
         })
 

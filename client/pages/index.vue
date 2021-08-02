@@ -79,6 +79,10 @@ export default {
             딱 맞을 때가 아니라 확 내렸을 때, 넘어가기 때문에 ===가 아닌 부등호를 사용한다.
 
             window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300
+
+            하지만, throttle을 적용하지 않으면,
+            이 조건을 만족하기만 하면 스크롤을 내릴 때마다 호출이 되어 중복 호출이 된다.
+            그래서 throttle로 딜레이를 줘서 방금 실행했던 것을 특정 시간이 지나기 전까지는 실행시키지 않도록 방지한다.
         */
         onScroll() {
             if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
