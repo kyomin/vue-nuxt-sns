@@ -20,7 +20,14 @@
                     아닌 것은 일반 텍스트로 렌더링핸다.
                 -->
                 <template v-for="(node, i) in nodes">
-                    <nuxt-link v-if="node.startsWith('#')" :key="i" :to="`/hashtag/${node.slice(1)}`">{{ node }}</nuxt-link>
+                    <nuxt-link 
+                        v-if="node.startsWith('#')" 
+                        :key="i" 
+                        :to="`/hashtag/${node.slice(1)}`"
+                        style="color: deepskyblue"
+                    >
+                        {{ node }}
+                    </nuxt-link>
                     <template v-else>{{ node }}</template>
                 </template>
             </div>

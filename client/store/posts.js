@@ -26,6 +26,10 @@ export const mutations = {
         const index = state.mainPosts.findIndex(v => v.id === payload.postId)
         Vue.set(state.mainPosts[index], 'Comments', payload.data)
     },
+    loadPost(state, payload) {
+        // 하나만 넣어준다.
+        state.mainPosts = [payload]
+    },
     loadPosts(state, payload) {
         if (payload.reset) {
             state.mainPosts = payload.data
@@ -114,6 +118,14 @@ export const actions = {
             .catch((err) => {
                 console.error(err)
             })
+    },
+    async loadPost({ commit, state }, payload) {
+        try {
+            const res = await this.$axios.get(`/post/${payload}`)
+            commit('loadPost', res.data)
+        } catch (err) {
+            console.error(err)
+        }
     },
     loadPosts: throttle(async function({ commit, state }, payload) {     // 한 번 실행되면, 3초가 지나기 전까지는 같은 함수가 실행되지 못 하게 한다.
         try {

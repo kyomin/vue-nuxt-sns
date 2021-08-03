@@ -96,6 +96,39 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     }
 })
 
+/* 특정 게시글 하나 불러오기 */
+router.get('/:id', async (req, res, next) => {
+    try {
+        const post = await db.Post.findOne({
+            where: { id: req.params.id },
+            include: [{
+                model: db.User,
+                attributes: ['id', 'nickname']
+            }, {
+                model: db.Image
+            }, {
+                model: db.User,
+                as: 'Likers',    // 이를 통해 User 테이블을 구분 짓는다.
+                attributes: ['id']
+            }, {
+                model: db.Post,  // 리트윗한거면 원본도 가져와 준다.
+                as: 'Retweet',       
+                include: [{
+                    model: db.User,
+                    attributes: ['id', 'nickname']
+                }, {
+                    model: db.Image
+                }]
+            }]
+        })
+
+        return res.json(post)
+    } catch (err) {
+        console.error(err)
+        next(err)
+    }
+})
+
 /* 게시들 코멘트 작성 */
 router.post('/:id/comment', isLoggedIn, async (req, res, next) => {     // :id => 동적으로 변할 수 있는 부분. params.id로 접근
     try {
