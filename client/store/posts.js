@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import throttle from "lodash.throttle"
 
 export const state = () => ({
@@ -19,11 +20,11 @@ export const mutations = {
     },
     addComment(state, payload) {
         const index = state.mainPosts.findIndex(v => v.id === payload.postId)
-        state.mainPosts[index].comments.unshift(payload)
+        state.mainPosts[index].Comments.unshift(payload.data)
     },
     loadComments(state, payload) {
         const index = state.mainPosts.findIndex(v => v.id === payload.postId)
-        state.mainPosts[index].comments.unshift(payload)
+        Vue.set(state.mainPosts[index], 'Comments', payload.data)
     },
     loadPosts(state, payload) {
         if (payload.reset) {
@@ -92,7 +93,10 @@ export const actions = {
             withCredentials: true
         })
             .then((res) => {
-                commit('addComment', res.data)
+                commit('addComment', {
+                    postId: payload.postId,
+                    data: res.data
+                })
             })
             .catch((err) => {
                 console.error(err)
@@ -102,7 +106,10 @@ export const actions = {
     loadComments({ commit }, payload) {
         this.$axios.get(`/post/${payload.postId}/comments`)
             .then((res) => {
-                commit('loadComments', res.data)
+                commit('loadComments', {
+                    postId: payload.postId,
+                    data: res.data
+                })
             })
             .catch((err) => {
                 console.error(err)
@@ -145,6 +152,29 @@ export const actions = {
             if (state.hasMorePost) {
                 const lastPost = state.mainPosts[state.mainPosts.length - 1]
                 const res = await this.$axios.get(`/user/${payload.userId}/posts?lastId=${lastPost && lastPost.id}&limit=${limit}`)
+                commit('loadPosts', {
+                    data: res.data
+                })
+                return
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }, 3000),
+    loadHashtagPosts: throttle(async function({ commit, state }, payload) {     
+        try {
+            if (payload && payload.reset) {
+                const res = await this.$axios.get(`/hashtag/${payload.hashtag}?limit=${limit}`)
+                commit('loadPosts', {
+                    data: res.data,
+                    reset: true
+                })
+                return
+            }
+
+            if (state.hasMorePost) {
+                const lastPost = state.mainPosts[state.mainPosts.length - 1]
+                const res = await this.$axios.get(`/hashtag/${payload.hashtag}?lastId=${lastPost && lastPost.id}&limit=${limit}`)
                 commit('loadPosts', {
                     data: res.data
                 })

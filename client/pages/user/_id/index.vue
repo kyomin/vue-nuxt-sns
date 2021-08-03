@@ -35,13 +35,17 @@ export default {
         }
     },
     fetch({ store, params }) {
-        store.dispatch('users/loadOther', {
-            userId: params.id
-        })
-        return store.dispatch('posts/loadUserPosts', {
-            userId: params.id,
-            reset: true
-        })
+        // 여러 개의 비동기 처리가 완전히 끝나는 것을 보장한다.
+        // 이전 버전에서는 아래가 먼저 실행돼 return 되면 위에 것이 실행 안 되는 문제가 생겼다.
+        return Promise.all([
+            store.dispatch('users/loadOther', {
+                userId: params.id
+            }),
+            store.dispatch('posts/loadUserPosts', {
+                userId: params.id,
+                reset: true
+            })
+        ])
     },
     mounted() {
         // 브라우저 객체 window는 mounted 됐을 때에 접근 가능하다.

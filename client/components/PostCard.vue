@@ -47,13 +47,13 @@
 
             <!-- 등록된 댓글들 -->
             <v-list>
-                <v-list-item v-for="c in post.comments" :key="c.id">
+                <v-list-item v-for="c in post.Comments" :key="c.id">
                     <v-list-item-avatar color="teal">
                         <span>{{ c.User.nickname[0] }}</span>
                     </v-list-item-avatar>
                     <v-list-item-content>
                         <v-list-item-title>{{ c.User.nickname }}</v-list-item-title>
-                        <v-list-item-subtitle>{{ c.comment }}</v-list-item-subtitle>
+                        <v-list-item-subtitle>{{ c.content }}</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
@@ -112,7 +112,7 @@ export default {
         onToggleComment() {
             // 댓글 창 여는 동작을 할 때 서버로부터 로드해 오기!
             if (!this.commentOpened) {
-                this.$store.dispatch('posts/addComment', {
+                this.$store.dispatch('posts/loadComments', {
                     postId: this.post.id
                 })
             }

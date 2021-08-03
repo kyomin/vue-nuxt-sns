@@ -68,8 +68,10 @@ export default {
             이 부분에서 offset 값을 전달하는 식으로 분기 처리한다.
             액션의 payload에서 받아서 값이 있는지, 없는지로 판단한다.
         */
-        store.dispatch('users/loadFollowings', { offset: 0 })
-        return store.dispatch('users/loadFollowers', { offset: 0 })
+        return Promise.all([
+            store.dispatch('users/loadFollowings', { offset: 0 }),
+            store.dispatch('users/loadFollowers', { offset: 0 })
+        ])
     },
     methods: {
         onChangeNickname() {

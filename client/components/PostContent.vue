@@ -15,7 +15,14 @@
         <!-- 게시글 내용 -->
         <v-card-text>
             <div>
-                <div>{{ post.content }}</div>
+                <!-- 
+                    해시태그(#)가 있는 것은 넉스트 링크로,
+                    아닌 것은 일반 텍스트로 렌더링핸다.
+                -->
+                <template v-for="(node, i) in nodes">
+                    <nuxt-link v-if="node.startsWith('#')" :key="i" :to="`/hashtag/${node.slice(1)}`">{{ node }}</nuxt-link>
+                    <template v-else>{{ node }}</template>
+                </template>
             </div>
         </v-card-text>
     </div>
@@ -34,6 +41,9 @@ export default {
         }
     },
     computed: {
+        nodes() {
+            return this.post.content.split(/(#[^\s#]+)/)
+        },
         me() {
             return this.$store.state.users.me
         },
