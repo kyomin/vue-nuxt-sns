@@ -8,6 +8,8 @@ module.exports = {
         개별 페이지의 head 함수에 알맞게 설정을 해준다.
 
         개별 페이지마다 head 설정이 되어 있다면 개별 페이지 설정 우선순위가 더 높다.
+        하지만, 덮어씌울 때, 그대로 이 부분의 내용이 head에 들어가 있으므로
+        공통된 속성을 hid를 통해 제거한다.
     */
     head: {
         title: 'KyoSNS',    // 이를 통해 검색 엔진은 이 페이지의 제목을 파악하고
@@ -19,18 +21,19 @@ module.exports = {
         }, {
             'http-equiv': 'X-UA-Compatible', content: 'IE=edge'
         }, {
-            name: 'description', content: 'Kyomin의 SNS'    // 이 페이지의 주제를 안다.
+            hid: 'desc', name: 'description', content: 'Kyomin의 SNS'    // 이 페이지의 주제를 안다.
         }, {
-            name: 'og:title', content: 'KyoSNS'            // 카톡 등에서 공유했을 때 뜨는 제목
+            hid: 'ogtitle', name: 'og:title', content: 'KyoSNS'            // 카톡 등에서 공유했을 때 뜨는 제목
         }, {    
-            name: 'og:description', content: 'Kyomin의 SNS' // 카톡 등에서 공유했을 때 뜨는 내용
+            hid: 'ogdesc', name: 'og:description', content: 'Kyomin의 SNS' // 카톡 등에서 공유했을 때 뜨는 내용
         }, {
             property: 'og:type', content: 'website'
         }, {
-            property: 'og:image', content: 'https://vue.nodebird.com/vue-nodebird.png'               // 카톡 등에서 공유했을 때 뜨는 이미지
+            hid: 'ogimage', property: 'og:image', content: 'https://vue.nodebird.com/vue-nodebird.png'               // 카톡 등에서 공유했을 때 뜨는 이미지
         }, {
-            property: 'og:url', content: 'https://vue.nodebird.com'                 // 카톡 등에서 공유했을 때 뜨는 URL
-        }]
+            hid: 'ogurl', property: 'og:url', content: 'https://vue.nodebird.com'                 // 카톡 등에서 공유했을 때 뜨는 URL
+        }],
+        link: [{ rel: 'shortcut icon', href: '/kyostagram.png' }]     // 탭에 나타나는 사이트의 아이콘. 프론트 서버의 static 폴더로 정적파일 서빙할 수 있음
     },
     /*
         nuxt와 외부 install한 외부 모듈 연결!

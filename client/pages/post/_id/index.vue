@@ -26,15 +26,15 @@ export default {
         return {
             title: `${this.post.User.nickname}님의 게시글`,
             meta: [{
-                name: 'description', content: this.post.content
+                hid: 'desc', name: 'description', content: this.post.content
             }, {
-                property: 'og:title', content: `${this.post.User.nickname}님의 게시글`
+                hid: 'ogtitle', property: 'og:title', content: `${this.post.User.nickname}님의 게시글`
             }, {
-                property: 'og:description', content: this.post.content
+                hid: 'ogdesc', property: 'og:description', content: this.post.content
             }, {
-                property: 'og:image', content: this.post.Images[0] ? this.post.Images[0].src : 'https://vue.nodebird.com/vue-nodebird.png'
+                hid: 'ogimage', property: 'og:image', content: this.post.Images[0] ? this.post.Images[0].src : 'https://vue.nodebird.com/vue-nodebird.png'
             }, {
-                property: 'og:url', content: `https://vue.nodebird.com/post/${this.post.id}`
+                hid: 'ogurl', property: 'og:url', content: `https://vue.nodebird.com/post/${this.post.id}`
             }]
         }
     }
