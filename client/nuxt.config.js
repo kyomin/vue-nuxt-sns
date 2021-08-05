@@ -1,8 +1,36 @@
 module.exports = {
-    // 여러 레이아웃이 같은 head 정보를 가질 시에, 이렇게 중복을 제거할 수 있다.
-    // 따로 설정하지 않은 페이지는 이 곳 head 정보를 따른다.
+    /*
+        여러 레이아웃이 같은 head 정보를 가질 시에, 이렇게 중복을 제거할 수 있다.
+        따로 설정하지 않은 페이지는 이 곳 head 정보를 따른다.
+
+        즉, 모든 페이지가 공통으로 갖는 메타 데이터를 넣는다.
+        서버 사이드 렌더링의 장점을 위해 여기가 아닌,
+        개별 페이지의 head 함수에 알맞게 설정을 해준다.
+
+        개별 페이지마다 head 설정이 되어 있다면 개별 페이지 설정 우선순위가 더 높다.
+    */
     head: {
-        title: 'KyoSNS'
+        title: 'KyoSNS',    // 이를 통해 검색 엔진은 이 페이지의 제목을 파악하고
+        meta: [{
+            charset: 'utf-8'
+        }, {
+            name: 'viewport',
+            content: 'width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=yes, viewport-fit=cover'
+        }, {
+            'http-equiv': 'X-UA-Compatible', content: 'IE=edge'
+        }, {
+            name: 'description', content: 'Kyomin의 SNS'    // 이 페이지의 주제를 안다.
+        }, {
+            name: 'og:title', content: 'KyoSNS'            // 카톡 등에서 공유했을 때 뜨는 제목
+        }, {    
+            name: 'og:description', content: 'Kyomin의 SNS' // 카톡 등에서 공유했을 때 뜨는 내용
+        }, {
+            property: 'og:type', content: 'website'
+        }, {
+            property: 'og:image', content: 'https://vue.nodebird.com/vue-nodebird.png'               // 카톡 등에서 공유했을 때 뜨는 이미지
+        }, {
+            property: 'og:url', content: 'https://vue.nodebird.com'                 // 카톡 등에서 공유했을 때 뜨는 URL
+        }]
     },
     /*
         nuxt와 외부 install한 외부 모듈 연결!

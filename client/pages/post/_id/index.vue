@@ -21,6 +21,22 @@ export default {
     },
     fetch({ store, params }) {
         return store.dispatch('posts/loadPost', params.id)
+    },
+    head() {
+        return {
+            title: `${this.post.User.nickname}님의 게시글`,
+            meta: [{
+                name: 'description', content: this.post.content
+            }, {
+                property: 'og:title', content: `${this.post.User.nickname}님의 게시글`
+            }, {
+                property: 'og:description', content: this.post.content
+            }, {
+                property: 'og:image', content: this.post.Images[0] ? this.post.Images[0].src : 'https://vue.nodebird.com/vue-nodebird.png'
+            }, {
+                property: 'og:url', content: `https://vue.nodebird.com/post/${this.post.id}`
+            }]
+        }
     }
 };
 </script>
