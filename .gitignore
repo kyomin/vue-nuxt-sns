@@ -30,3 +30,6 @@ config/
 
 # image files
 uploads/
+
+# AWS CLOUD SSH Key
+kyosns.pem
