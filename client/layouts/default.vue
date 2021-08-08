@@ -3,7 +3,7 @@
         <nav>
             <v-toolbar dark color="green">
                 <v-toolbar-title>
-                    <nuxt-link to="/">KyoSNS</nuxt-link>
+                    <nuxt-link to="/">Kyowitter</nuxt-link>
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
