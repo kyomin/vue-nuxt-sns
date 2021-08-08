@@ -4,6 +4,9 @@ const passport = require('passport')
 const session = require('express-session')
 const cookie = require('cookie-parser')
 const morgan = require('morgan')
+const hpp = require('hpp')
+const helmet = require('helmet')
+const dotenv = require('dotenv')
 
 const db = require('./models')
 const passportConfig = require('./passport')
@@ -12,30 +15,46 @@ const postRouter = require('./routes/post')
 const postsRouter = require('./routes/posts')
 const hashtagRouter = require('./routes/hashtag')
 
-const port = 3085       // allocate port number
+const prod = process.env.NODE_ENV === 'production'
+const dev_port = 3085       // allocate port number
 const app = express()   // make express app
 // db.sequelize.sync({ force: true })  // 모델(table) 구조 수정 시 강제 적용. 테이블 지웠다가 다시 만듦.
 db.sequelize.sync()     // database connection
 passportConfig()        // for login auth
+dotenv.config()
 
+/* 
+    express 미들웨어 등록 
+    배포와 개발 환경에 따라 등록하는 미들웨어가 다르다.
+*/
+if (prod) {     // 배포 환경
+    app.use(helmet())
+    app.use(hpp())
+    app.use(morgan('combined'))
+    app.use(cors({
+        origin: 'http://kyosns.ml',
+        credentials: true   // 서로 간에 쿠키를 주고받을 수 있도록 설정
+    }))
+} else {        // 개발 환경
+    app.use(morgan('dev'))
+    app.use(cors({
+        origin: 'http://localhost:3080',
+        credentials: true   // 서로 간에 쿠키를 주고받을 수 있도록 설정
+    }))
+}
 
-/* express 미들웨어 등록 */
-app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use(cors({
-    origin: 'http://localhost:3080',
-    credentials: true   // 서로 간에 쿠키를 주고받을 수 있도록 설정
-}))
 app.use('/', express.static('uploads'))     // 정적 파일 경로 미들웨어로 등록. 이제 클라이언트에서는 '/파일명'으로 사진 파일에 접근 가능하다.
-app.use(cookie('cookiesecret'))
+app.use(cookie(process.env.COOKIE_SECRET))
 app.use(session({
     resave: false,
     saveUninitialized: false,
-    secret: 'cookiesecret',
+    secret: process.env.COOKIE_SECRET,
     cookie: {
         httpOnly: true,
-        secure: false
+        secure: false,
+        domain: prod && '.ml'
     }
 }))
 app.use(passport.initialize())  // 이 미들웨어에서 request 객체에 login과 logout을 넣어줌
@@ -56,6 +75,9 @@ app.get('/', (req, res) => {
     res.send('Welcome to KyoSNS Server')
 })
 
-app.listen(port, () => {
-    console.log(`백엔드 서버 ${port}번 포트에서 열림`)
+app.listen(prod ? process.env.PORT : dev_port, () => {
+    if (prod) 
+        console.log(`백엔드 서버 배포 환경에서 ${process.env.PORT}번 포트에서 열림`)
+    else
+        console.log(`백엔드 서버 개발 환경에서 ${dev_port}번 포트에서 열림`)
 })

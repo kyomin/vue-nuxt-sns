@@ -12,7 +12,7 @@ module.exports = {
         공통된 속성을 hid를 통해 제거한다.
     */
     head: {
-        title: 'KyoSNS',    // 이를 통해 검색 엔진은 이 페이지의 제목을 파악하고
+        title: 'Kyowitter',    // 이를 통해 검색 엔진은 이 페이지의 제목을 파악하고
         meta: [{
             charset: 'utf-8'
         }, {
@@ -33,7 +33,7 @@ module.exports = {
         }, {
             hid: 'ogurl', property: 'og:url', content: 'https://vue.nodebird.com'                 // 카톡 등에서 공유했을 때 뜨는 URL
         }],
-        link: [{ rel: 'shortcut icon', href: '/kyostagram.png' }]     // 탭에 나타나는 사이트의 아이콘. 프론트 서버의 static 폴더로 정적파일 서빙할 수 있음
+        link: [{ rel: 'shortcut icon', href: '/kyowitter.jpg' }]     // 탭에 나타나는 사이트의 아이콘. 프론트 서버의 static 폴더로 정적파일 서빙할 수 있음
     },
     /*
         nuxt와 외부 install한 외부 모듈 연결!
