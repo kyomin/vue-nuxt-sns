@@ -26,7 +26,6 @@ selenium-debug.log
 *.sqlite
 
 # config files
-config/
 .env
 
 # image files
