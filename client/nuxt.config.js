@@ -74,6 +74,10 @@ module.exports = {
         https: false
     },
     server: {
-        port: 3080
+        /* 
+            실제 서비스할 때에는 80이나 443포트이다.
+            개발 시에만 로컬에서 3080으로 연 것이다.
+        */
+        port: process.env.PORT || 3080  
     }
 }
