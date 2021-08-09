@@ -29,8 +29,8 @@ dotenv.config()
 */
 if (prod) {     // 배포 환경
     console.log('현재 서버는 배포 환경에서 돌아갑니다.')
-    app.use(helmet())
-    app.use(hpp())
+    // app.use(helmet())
+    // app.use(hpp())
     app.use(morgan('combined'))
     app.use(cors({
         origin: [
