@@ -32,13 +32,13 @@ if (prod) {     // 배포 환경
     app.use(hpp())
     app.use(morgan('combined'))
     app.use(cors({
-        origin: 'http://kyosns.ml',
+        origin: ['http://www.kyosns.ml', 'http://18.116.22.153'],
         credentials: true   // 서로 간에 쿠키를 주고받을 수 있도록 설정
     }))
 } else {        // 개발 환경
     app.use(morgan('dev'))
     app.use(cors({
-        origin: ['http://www.kyosns.ml', 'http://18.116.22.153'],
+        origin: 'http://localhost:3080',
         credentials: true   // 서로 간에 쿠키를 주고받을 수 있도록 설정
     }))
 }
