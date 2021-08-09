@@ -27,6 +27,7 @@ dotenv.config()
     express 미들웨어 등록 
     배포와 개발 환경에 따라 등록하는 미들웨어가 다르다.
 */
+console.log('process.env.NODE_ENV : ', process.env.NODE_ENV)
 if (prod) {     // 배포 환경
     app.use(helmet())
     app.use(hpp())
