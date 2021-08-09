@@ -38,7 +38,7 @@ if (prod) {     // 배포 환경
 } else {        // 개발 환경
     app.use(morgan('dev'))
     app.use(cors({
-        origin: 'http://www.kyosns.ml',
+        origin: ['http://www.kyosns.ml', 'http://18.116.22.153'],
         credentials: true   // 서로 간에 쿠키를 주고받을 수 있도록 설정
     }))
 }
