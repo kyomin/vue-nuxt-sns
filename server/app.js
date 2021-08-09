@@ -28,6 +28,7 @@ dotenv.config()
     배포와 개발 환경에 따라 등록하는 미들웨어가 다르다.
 */
 if (prod) {     // 배포 환경
+    console.log('현재 서버는 배포 환경에서 돌아갑니다.')
     app.use(helmet())
     app.use(hpp())
     app.use(morgan('combined'))
@@ -36,6 +37,7 @@ if (prod) {     // 배포 환경
         credentials: true   // 서로 간에 쿠키를 주고받을 수 있도록 설정
     }))
 } else {        // 개발 환경
+    console.log('현재 서버는 개발 환경에서 돌아갑니다.')
     app.use(morgan('dev'))
     app.use(cors({
         origin: 'http://localhost:3080',
