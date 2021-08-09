@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js",
+    "start_not_pm2": "cross-env PORT=80 NODE_ENV=production node app.js",
     "start": "cross-env PORT=80 NODE_ENV=production pm2 start app.js"
   },
   "author": "kyomin",

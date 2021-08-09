@@ -32,7 +32,7 @@ if (prod) {     // 배포 환경
     app.use(hpp())
     app.use(morgan('combined'))
     app.use(cors({
-        origin: ['http://www.kyosns.ml', 'http://18.116.22.153'],
+        origin: 'http://www.kyosns.ml',
         credentials: true   // 서로 간에 쿠키를 주고받을 수 있도록 설정
     }))
 } else {        // 개발 환경
@@ -76,8 +76,7 @@ app.get('/', (req, res) => {
 })
 
 app.listen(prod ? process.env.PORT : dev_port, () => {
-    if (prod) 
-        console.log(`백엔드 서버 배포 환경에서 ${process.env.PORT}번 포트에서 열림`)
-    else
-        console.log(`백엔드 서버 개발 환경에서 ${dev_port}번 포트에서 열림`)
+    console.log(`백엔드 서버 배포 환경에서 ${prod ? process.env.PORT : dev_port}번 포트에서 열림`)
+    console.log('process.env.NODE_ENV : ', process.env.NODE_ENV)
+    console.log('process.env.PORT : ', process.env.PORT)
 })
