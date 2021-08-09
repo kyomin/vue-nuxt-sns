@@ -81,7 +81,7 @@ app.get('/', (req, res) => {
 })
 
 app.listen(prod ? process.env.PORT : dev_port, () => {
-    console.log(`백엔드 서버 배포 환경에서 ${prod ? process.env.PORT : dev_port}번 포트에서 열림`)
+    console.log(`백엔드 서버 ${prod ? '배포' : '개발'} 환경에서 ${prod ? process.env.PORT : dev_port}번 포트에서 열림`)
     console.log('process.env.NODE_ENV : ', process.env.NODE_ENV)
     console.log('process.env.PORT : ', process.env.PORT)
 })
