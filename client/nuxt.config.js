@@ -69,8 +69,8 @@ module.exports = {
     },
     vuetify: {},
     axios: {
-        browserBaseURL: process.env.NODE_ENV === 'production' ? 'http://api.kyosns.ml' : 'http://localhost:3085',
-        baseURL: process.env.NODE_ENV === 'production' ? 'http://api.kyosns.ml' : 'http://localhost:3085',
+        browserBaseURL: process.env.NODE_ENV === 'production' ? 'https://api.kyosns.ml' : 'http://localhost:3085',
+        baseURL: process.env.NODE_ENV === 'production' ? 'https://api.kyosns.ml' : 'http://localhost:3085',
         https: false
     },
     server: {
