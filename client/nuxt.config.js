@@ -23,7 +23,7 @@ module.exports = {
         }, {
             hid: 'desc', name: 'description', content: 'Kyomin의 SNS'    // 이 페이지의 주제를 안다.
         }, {
-            hid: 'ogtitle', name: 'og:title', content: 'KyoSNS'            // 카톡 등에서 공유했을 때 뜨는 제목
+            hid: 'ogtitle', name: 'og:title', content: 'Kyowitter'            // 카톡 등에서 공유했을 때 뜨는 제목
         }, {    
             hid: 'ogdesc', name: 'og:description', content: 'Kyomin의 SNS' // 카톡 등에서 공유했을 때 뜨는 내용
         }, {
@@ -69,7 +69,7 @@ module.exports = {
     },
     vuetify: {},
     axios: {
-        browserBaseURL: 'http://localhost:3085',
+        browserBaseURL: process.env.NODE_ENV === 'production' ? 'https://api.kyosns.ml' : 'http://localhost:3085',
         baseURL: 'http://localhost:3085',
         https: false
     },
